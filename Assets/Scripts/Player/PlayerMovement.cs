@@ -10,6 +10,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Vector2Int _currentGridPosition = Vector2Int.zero;
 
+    [Header("Movement Settings")]
+    [Tooltip("1マスあたりのワールド移動距離")]
+    [SerializeField]
+    private float _moveStepWorldSize = 0.04f;
+
     private void Start()
     {
         // 例えば初期位置のバリデーションなどに使用
@@ -22,6 +27,21 @@ public class PlayerMovement : MonoBehaviour
     public Vector2Int GetCurrentPosition()
     {
         return _currentGridPosition;
+    }
+
+    /// <summary>
+    /// DirectionType に対応するワールド空間での進行方向ベクトルを取得する
+    /// </summary>
+    private Vector3 GetWorldDirection(DirectionType direction)
+    {
+        switch (direction)
+        {
+            case DirectionType.Up:    return new Vector3(1f, 0f, 0f);   // 前進: +X
+            case DirectionType.Left:  return new Vector3(0f, 0f, 1f);   // 左: +Z
+            case DirectionType.Down:  return new Vector3(-1f, 0f, 0f);  // 後退: -X
+            case DirectionType.Right: return new Vector3(0f, 0f, -1f);  // 右: -Z
+            default: return Vector3.zero;
+        }
     }
 
     /// <summary>
@@ -58,7 +78,16 @@ public class PlayerMovement : MonoBehaviour
             _currentGridPosition = targetPosition;
             Debug.Log($"[PlayerMovement] Moved {actualMovedSteps} step(s) to {direction}. New Position: {_currentGridPosition}");
             
-            // TODO: 将来的にここで実際の3Dモデルを移動させるアニメーション・Tween処理を呼び出す
+            // 指定されたワールド方向に合わせて移動させる
+            Vector3 worldDirection = GetWorldDirection(direction);
+            Vector3 moveDelta = worldDirection * (_moveStepWorldSize * actualMovedSteps);
+            transform.position += moveDelta;
+
+            // 体の向きを進行方向に向ける
+            if (worldDirection != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(worldDirection, Vector3.up);
+            }
         }
         else
         {
