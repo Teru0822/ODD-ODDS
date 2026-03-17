@@ -32,3 +32,11 @@ git push -u origin feature/issueX_description
 ## 4. ユーザーへの報告と承認待ち
 ブランチをプッシュしたら、ユーザーに「Pushが完了したこと」「内容の確認をお願いしたいこと」を通知（`notify_user`）し、待機してください。
 ユーザーから「マージして下さい」「次のIssueに行っていいよ（=マージ承認と同義）」などの**明確な許可が出た場合にのみ**、初めて `main` へのマージを行ってください。
+
+## 5. 【重要】マージ時の --no-ff オプションの徹底
+作業ブランチを `main` へ合流させる際、これまでの直線的な履歴（Fast-Forward）になるのを防ぎ、作業の分岐と合流の線を明確に残すために**必ず `--no-ff` オプションを付けてマージ**してください。
+```bash
+git checkout main
+git merge --no-ff feature/issueX_description -m "Merge branch 'feature/issueX_description'"
+git push origin main
+```
