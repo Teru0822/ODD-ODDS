@@ -1,9 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// カードの束をクリックした際にカメラを手元視点へ移動させます
+/// カードの束をクリックした際に未開封パックを1つ消費し、カメラを手元視点へ移動させてカードを展開します
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class InteractCardDeck : MonoBehaviour, IClickInteractable
@@ -15,8 +16,8 @@ public class InteractCardDeck : MonoBehaviour, IClickInteractable
     [Header("Card Drawing")]
     [Tooltip("カードの生成と配置をつかさどる HandManager の参照")]
     public HandManager handManager;
-    [Tooltip("1回のクリックで引くカードの枚数（テスト・デフォルト用）")]
-    public int cardsToDraw = 3;
+    [Tooltip("クリック時に開封するパックの種類ID（デフォルト0）")]
+    public int targetPackId = 0;
 
     private CameraFollow _mainCamera;
 
@@ -50,13 +51,28 @@ public class InteractCardDeck : MonoBehaviour, IClickInteractable
     {
         if (_mainCamera != null && deckViewTarget != null)
         {
+            if (PackManager.Instance == null)
+            {
+                Debug.LogError("[InteractCardDeck] PackManagerが存在しません。");
+                return;
+            }
+
+            // パックを開封し、カードデータのリストを取得
+            List<CardData> drawnCards = PackManager.Instance.OpenPack(targetPackId);
+            if (drawnCards == null || drawnCards.Count == 0)
+            {
+                // 所持していない、またはデータベースが空の場合は終了
+                Debug.Log("[InteractCardDeck] パックがないため、またはエラーのためドローできませんでした。");
+                return;
+            }
+
             _mainCamera.MoveToView(deckViewTarget);
             Debug.Log("[InteractCardDeck] カメラをカード展開視点へ移動します。");
             
             if (handManager != null)
             {
                 // カメラが移動したあとにドロー開始した方が自然なため、少し遅らせて実行
-                StartCoroutine(DrawAfterCameraMove());
+                StartCoroutine(DrawAfterCameraMove(drawnCards));
             }
             else
             {
@@ -69,12 +85,12 @@ public class InteractCardDeck : MonoBehaviour, IClickInteractable
         }
     }
 
-    private IEnumerator DrawAfterCameraMove()
+    private IEnumerator DrawAfterCameraMove(List<CardData> drawnCards)
     {
         // カメラが指定視点へ向かうのとおおよそ同じ時間（smoothTime目安）待機
         yield return new WaitForSeconds(0.4f);
         
-        // カードのドロー指示
-        handManager.DrawCards(cardsToDraw);
+        // 排出されたカードデータのリストを手元に展開
+        handManager.DrawCards(drawnCards);
     }
 }

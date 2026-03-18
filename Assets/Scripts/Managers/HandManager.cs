@@ -38,9 +38,9 @@ public class HandManager : MonoBehaviour
     private List<GameObject> _drawnCards = new List<GameObject>();
 
     /// <summary>
-    /// 指定された枚数分のカードを生成し、順番に手元へアニメーション配置します
+    /// 指定されたカードデータのリストを受け取り、順番に手元へアニメーション配置します
     /// </summary>
-    public void DrawCards(int count)
+    public void DrawCards(List<CardData> cardsToDraw)
     {
         if (cardPrefab == null || deckOrigin == null || handCenterPoint == null)
         {
@@ -48,14 +48,17 @@ public class HandManager : MonoBehaviour
             return;
         }
 
+        if (cardsToDraw == null || cardsToDraw.Count == 0) return;
+
         // 前回のカードがあればクリア
         ClearHand();
 
-        StartCoroutine(DrawCardsRoutine(count));
+        StartCoroutine(DrawCardsRoutine(cardsToDraw));
     }
 
-    private IEnumerator DrawCardsRoutine(int count)
+    private IEnumerator DrawCardsRoutine(List<CardData> cardsToDraw)
     {
+        int count = cardsToDraw.Count;
         for (int i = 0; i < count; i++)
         {
             // デッキの位置にカードを生成
@@ -69,6 +72,14 @@ public class HandManager : MonoBehaviour
                 animator = newCard.AddComponent<CardAnimator>();
             }
 
+            // === 追加：CardObjectとしてのデータ初期化 ===
+            CardObject cardObj = newCard.GetComponent<CardObject>();
+            if (cardObj == null)
+            {
+                cardObj = newCard.AddComponent<CardObject>();
+            }
+            cardObj.Initialize(cardsToDraw[i], this);
+
             // このカードの最終的な目標座標を計算
             Vector3 targetPosition = CalculateCardPosition(i, count);
             // 回転はHandCenterPointの向きを基準に、角度補正（Offset）を加える
@@ -79,6 +90,17 @@ public class HandManager : MonoBehaviour
 
             // 次のカードのドローまで少し待つ
             yield return new WaitForSeconds(delayBetweenCards);
+        }
+    }
+
+    /// <summary>
+    /// 手元にある特定のカードリストから除外します（使用された場合など）
+    /// </summary>
+    public void RemoveCardFromHand(GameObject cardObj)
+    {
+        if (_drawnCards.Contains(cardObj))
+        {
+            _drawnCards.Remove(cardObj);
         }
     }
 

@@ -11,10 +11,15 @@ public class PackManager : MonoBehaviour
 {
     public static PackManager Instance { get; private set; }
 
+    [Header("Gacha Inventory")]
+    [SerializeField] private int _packTypeCount = 6;//パックの種類数
+
+    [Header("Card Database")]
+    [Tooltip("ゲーム内に登場する全種類のカードデータを登録します")]
+    [SerializeField] private List<CardData> _allAvailableCards = new List<CardData>();
+
     // パックIDをキー、所持数を値とするDictionary
     private Dictionary<int, int> _ownedPacks = new Dictionary<int, int>();
-
-    [SerializeField] private int _packTypeCount = 6;//パックの種類数
 
     private void Awake()
     {
@@ -39,9 +44,6 @@ public class PackManager : MonoBehaviour
     /// <summary>
     /// 指定されたパックを購入する
     /// </summary>
-    /// <param name="packId">購入するパックのID</param>
-    /// <param name="price">パックの売価</param>
-    /// <returns>購入に成功したかどうか</returns>
     public bool BuyPack(int packId, int price)
     {
         if (MoneyManager.Instance == null)
@@ -71,10 +73,61 @@ public class PackManager : MonoBehaviour
     }
 
     /// <summary>
+    /// パックを1つ開封し、ランダムな5枚のカードデータ（必ず1枚は移動カード）を排出する
+    /// </summary>
+    public List<CardData> OpenPack(int packId)
+    {
+        if (!_ownedPacks.ContainsKey(packId) || _ownedPacks[packId] <= 0)
+        {
+            Debug.LogWarning($"[PackManager] パック(ID: {packId}) を所持していないため開封できません。");
+            return null;
+        }
+
+        if (_allAvailableCards == null || _allAvailableCards.Count == 0)
+        {
+            Debug.LogError("[PackManager] データベースに CardData が1枚も登録されていません。");
+            return null;
+        }
+
+        // パック所持数を減らす
+        _ownedPacks[packId]--;
+
+        List<CardData> drawnCards = new List<CardData>();
+
+        // 必須の「移動カード」を1枚探して入れる
+        List<CardData> moveCards = _allAvailableCards.FindAll(c => c.Type == CardType.Move);
+        if (moveCards.Count > 0)
+        {
+            drawnCards.Add(moveCards[Random.Range(0, moveCards.Count)]);
+        }
+        else
+        {
+            Debug.LogWarning("[PackManager] データベースに移動カード(MoveCardData)が登録されていません！");
+            drawnCards.Add(_allAvailableCards[Random.Range(0, _allAvailableCards.Count)]);
+        }
+
+        // 残りの4枚をランダムに抽選
+        for (int i = 0; i < 4; i++)
+        {
+            drawnCards.Add(_allAvailableCards[Random.Range(0, _allAvailableCards.Count)]);
+        }
+
+        // 配列の中身をシャッフル（移動カードが必ず1枚目にならないように）
+        for (int i = 0; i < drawnCards.Count; i++)
+        {
+            CardData temp = drawnCards[i];
+            int randomIndex = Random.Range(i, drawnCards.Count);
+            drawnCards[i] = drawnCards[randomIndex];
+            drawnCards[randomIndex] = temp;
+        }
+
+        Debug.Log($"[PackManager] パック(ID: {packId}) を開封しました。残り所持数: {_ownedPacks[packId]}");
+        return drawnCards;
+    }
+
+    /// <summary>
     /// 指定したパックの現在の所持数を取得する
     /// </summary>
-    /// <param name="packId">取得したいパックのID</param>
-    /// <returns>所持数</returns>
     public int GetPackCount(int packId)
     {
         if (_ownedPacks.TryGetValue(packId, out int count))
