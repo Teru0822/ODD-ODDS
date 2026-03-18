@@ -14,6 +14,9 @@ public class CardObject : MonoBehaviour, IClickInteractable
     private HandManager _handManager;
     private Transform _boardViewTarget; // HandManagerから渡される盤面ビュー参照
     private float _cameraWaitTime = 0.8f; // カメラ移動完了を待つ御時間（秒）
+    private bool _isUsed = false; // カードが既に使用されたかどうかのフラグ
+
+    [HideInInspector] public bool IsFromPack { get; set; } = false; // パックから出たばかりの新規カードかどうか
 
     [Header("Visual References")]
     [Tooltip("カードの絵柄を表示するSpriteRenderer（あれば割り当て）")]
@@ -141,6 +144,16 @@ public class CardObject : MonoBehaviour, IClickInteractable
     /// </summary>
     public void OnInteract()
     {
+        // 【新機能】破棄選択モード中の場合は、使用ではなく選択の切り替えを行う
+        if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding)
+        {
+            DiscardManager.Instance.ToggleSelection(this);
+            return;
+        }
+
+        if (_isUsed) return;
+        _isUsed = true;
+
         if (_cardData == null) return;
 
         // 【修正】使用時にプレイヤーの保持デッキ（PlayerHand）内からも削除する
@@ -179,6 +192,13 @@ public class CardObject : MonoBehaviour, IClickInteractable
             if (PlayerHand.Instance != null && _handManager != null)
             {
                 _handManager.SaveRemainingCardsToPlayerHand();
+            }
+
+            // 【重要】上限を超えて破棄選択モードに入った場合は、移動処理（カメラ移動・人形移動）を中断して選択を優先する
+            if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding)
+            {
+                Destroy(gameObject);
+                return;
             }
 
             // カメラをBoxViewへ移動させ、到達後に人形を動かすCoroutineを開始
@@ -276,5 +296,29 @@ public class CardObject : MonoBehaviour, IClickInteractable
             _handManager.RemoveCardFromHand(gameObject);
         }
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// 選択状態に応じたハイライト表示を切り替えます
+    /// </summary>
+    public void SetHighlight(bool highlighted, Color color)
+    {
+        // 子オブジェクトを含めてMeshRendererを探す（カードの見た目が子にある場合を想定）
+        var renderers = GetComponentsInChildren<MeshRenderer>();
+        foreach (var r in renderers)
+        {
+            if (highlighted)
+            {
+                r.material.EnableKeyword("_EMISSION");
+                r.material.SetColor("_EmissionColor", color * 0.5f);
+                r.material.color = color;
+            }
+            else
+            {
+                r.material.DisableKeyword("_EMISSION");
+                // ハイライト解除時は元のカード色に戻す
+                ApplyCardColor();
+            }
+        }
     }
 }

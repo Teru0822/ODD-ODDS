@@ -47,7 +47,7 @@ public class HandManager : MonoBehaviour
     /// <summary>
     /// 指定されたカードデータのリストを受け取り、順番に手元へアニメーション配置します
     /// </summary>
-    public void DrawCards(List<CardData> cardsToDraw)
+    public void DrawCards(List<CardData> cardsToDraw, bool fromPack = false)
     {
         if (cardPrefab == null || deckOrigin == null || handCenterPoint == null)
         {
@@ -57,15 +57,20 @@ public class HandManager : MonoBehaviour
 
         if (cardsToDraw == null || cardsToDraw.Count == 0) return;
 
-        Debug.Log($"[HandManager] Drawing {cardsToDraw.Count} cards...");
-        StartCoroutine(DrawCardsRoutine(cardsToDraw));
+        // 【復活】新しいカードを引く前に、現在の表示をクリアする
+        ClearHand();
+
+        Debug.Log($"[HandManager] Drawing {cardsToDraw.Count} cards (FromPack: {fromPack})...");
+        StartCoroutine(DrawCardsRoutine(cardsToDraw, fromPack));
     }
 
-    private IEnumerator DrawCardsRoutine(List<CardData> cardsToDraw)
+    private IEnumerator DrawCardsRoutine(List<CardData> cardsToDraw, bool fromPack)
     {
         int count = cardsToDraw.Count;
         for (int i = 0; i < count; i++)
         {
+            if (cardsToDraw[i] == null) continue;
+
             // デッキの位置にカードを生成
             GameObject newCard = Instantiate(cardPrefab, deckOrigin.position, deckOrigin.rotation);
             _drawnCards.Add(newCard);
@@ -84,6 +89,7 @@ public class HandManager : MonoBehaviour
                 cardObj = newCard.AddComponent<CardObject>();
             }
             cardObj.Initialize(cardsToDraw[i], this, boardViewTarget);
+            cardObj.IsFromPack = fromPack; // 【新機能】パックからの新規分か、デッキの既存分かをセット
 
             // このカードの最終的な目標座標を計算
             Vector3 targetPosition = CalculateCardPosition(i, count);
@@ -110,33 +116,55 @@ public class HandManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 現在展開されている全カード（自分から自分をRemove済みの移動カード以外）を
-    /// プレイヤーの保持デッキ（PlayerHand）へ保存し、展開リストからクリアします。
+    /// 現在展開中のカードオブジェクトのリストを取得します
+    /// </summary>
+    public List<CardObject> GetDrawnCardObjects()
+    {
+        List<CardObject> objects = new List<CardObject>();
+        foreach (var cardGO in _drawnCards)
+        {
+            if (cardGO != null)
+            {
+                CardObject cardObj = cardGO.GetComponent<CardObject>();
+                if (cardObj != null) objects.Add(cardObj);
+            }
+        }
+        return objects;
+    }
+
+    /// <summary>
+    /// 現在展開されている全カード（移動カード以外）を
+    /// プレイヤーの保持デッキ（PlayerHand）へ保存（上書き同期）し、展開リストからクリアします。
     /// </summary>
     public void SaveRemainingCardsToPlayerHand()
     {
         if (PlayerHand.Instance == null) return;
 
-        List<CardData> cardsToSave = new List<CardData>();
+        List<CardData> newCardsToSave = new List<CardData>();
         foreach (var cardGO in _drawnCards)
         {
             if (cardGO == null) continue;
             CardObject cardObj = cardGO.GetComponent<CardObject>();
             if (cardObj != null && cardObj.CardData != null)
             {
-                // 移動カードは保持しない（ユーザー要望）
+                // 移動カードは保持しない
                 if (cardObj.CardData.Type == CardType.Move) continue;
 
-                cardsToSave.Add(cardObj.CardData);
+                // 【修正】パックから出た新規カードのみを保存対象にする（二重保存防止）
+                if (cardObj.IsFromPack)
+                {
+                    newCardsToSave.Add(cardObj.CardData);
+                    cardObj.IsFromPack = false; // 保存済みにマーク
+                }
             }
         }
 
-        if (cardsToSave.Count > 0)
+        // 新規分があれば追加（ここでの上限チェックが破棄フローをキックする）
+        if (newCardsToSave.Count > 0)
         {
-            PlayerHand.Instance.AddCards(cardsToSave);
+            PlayerHand.Instance.AddCards(newCardsToSave);
         }
 
-        // 保存対象が有る無しにかかわらず、現在展開中のカード（_drawnCards）を全て画面から消去し、
         // 可視的な演出（デッキに戻る）を行う。
         ClearHand();
     }
@@ -183,25 +211,29 @@ public class HandManager : MonoBehaviour
     /// </summary>
     private Vector3 CalculateCardPosition(int index, int totalCount)
     {
-        // 2段表示（合計6枚以上）の場合、全体の表示位置を少し下げる（上段をカメラ内に収めるため）
-        float yAdjustment = (totalCount > 5) ? -0.4f : 0f;
+        // 表示枚数に応じた全体の高さ調整
+        float yAdjustment = 0f;
+        if (totalCount > 10) yAdjustment = -0.6f;      // 3段表示時 (机に埋もれないよう少し上げる)
+        else if (totalCount > 5) yAdjustment = -0.4f;   // 2段表示時
 
-        // 最大10枚、2段表示（1段5枚ずつ）のロジック
-        // 下段（手前）：0〜4, 上段（奥）：5〜9
-        int rowIndex = index / 5; // 0=下段, 1=上段
+        // 最大15枚、3段表示（1段5枚ずつ）のロジック
+        // 下段（手前）：0〜4, 中段：5〜9, 上段（奥）：10〜14
+        int rowIndex = index / 5; // 0=下段, 1=中段, 2=上段
         int colIndex = index % 5; // 各段の左から何枚目か
 
         // 各段ごとの総枚数（その段に何枚あるか）を判定
-        int countInRow = (rowIndex == 0) ? Mathf.Min(totalCount, 5) : (totalCount - 5);
+        int countInRow;
+        if (rowIndex == 0) countInRow = Mathf.Min(totalCount, 5);
+        else if (rowIndex == 1) countInRow = Mathf.Min(totalCount - 5, 5);
+        else countInRow = totalCount - 10;
         
         // その段内での中心からのオフセット
         float offsetIndex = colIndex - (countInRow - 1) / 2f;
         
         // Z(前後)とY(上下)の奥行き・高さ調整
-        // 上段(rowIndex=1)は少し奥(Z+)、少し上(Y+)に配置する
-        // rowSpacing を少し狭め（デフォルト 0.8f のところ、 rowIndex 適用時に詰める）
+        // 段が上がるごとに少しずつ奥(Z+)、少しずつ上(Y+)に配置する
         float currentZOffset = zOffset + rowIndex * 0.25f; 
-        float currentYOffset = yOffset + yAdjustment + (rowIndex * rowSpacing * 0.75f);
+        float currentYOffset = yOffset + yAdjustment + (rowIndex * 0.45f); // 行間の調整
 
         Vector3 localOffset = new Vector3(offsetIndex * cardSpacing, currentYOffset, currentZOffset);
         
@@ -215,41 +247,38 @@ public class HandManager : MonoBehaviour
     {
         if (_drawnCards.Count == 0) return;
 
-        // すでにドロー中・戻し中なら一旦停止
-        StopAllCoroutines();
-        StartCoroutine(ReturnCardsRoutine());
+        // 【修正】リストを即座にコピーしてクリアすることで、直後の DrawCards との競合を防ぐ
+        List<GameObject> cardsToReturn = new List<GameObject>(_drawnCards);
+        _drawnCards.Clear();
+
+        StartCoroutine(ReturnCardsRoutine(cardsToReturn));
     }
 
-    private IEnumerator ReturnCardsRoutine()
+    private IEnumerator ReturnCardsRoutine(List<GameObject> cardsToReturn)
     {
         // リストの最後（一番右）のカードから順に戻していく
-        for (int i = _drawnCards.Count - 1; i >= 0; i--)
+        for (int i = cardsToReturn.Count - 1; i >= 0; i--)
         {
-            GameObject card = _drawnCards[i];
+            GameObject card = cardsToReturn[i];
             if (card != null)
             {
                 CardAnimator animator = card.GetComponent<CardAnimator>();
                 if (animator != null && deckOrigin != null)
                 {
-                    // デッキから引き抜く時より少し早めの時間（例：半分の時間）で戻す
                     animator.AnimateTo(deckOrigin.position, deckOrigin.rotation, animationDuration * 0.5f);
                 }
-
-                // 戻るアニメーションが終わるまで少しだけ待つ
                 yield return new WaitForSeconds(delayBetweenCards * 0.5f);
             }
         }
 
-        // アニメーション完了を待ってからまとめて削除
         yield return new WaitForSeconds(animationDuration * 0.5f);
 
-        foreach (var card in _drawnCards)
+        foreach (var card in cardsToReturn)
         {
             if (card != null)
             {
                 Destroy(card);
             }
         }
-        _drawnCards.Clear();
     }
 }

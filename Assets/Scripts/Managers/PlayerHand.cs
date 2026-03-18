@@ -40,21 +40,53 @@ public class PlayerHand : MonoBehaviour
     /// </summary>
     public void AddCards(List<CardData> cards)
     {
-        if (cards == null) return;
+        if (cards == null || cards.Count == 0) return;
 
+        Debug.Log($"[PlayerHand] AddCards呼び出し: 現在={_heldCards.Count}枚, 追加={cards.Count}枚");
+        foreach(var c in _heldCards) Debug.Log($"  - 保持中: {c?.CardName}");
+        foreach(var c in cards) Debug.Log($"  - 追加分: {c?.CardName}");
+
+        // 全カードを一旦追加したと仮定して上限チェック
+        int totalProjectedCount = _heldCards.Count + cards.Count;
+        if (totalProjectedCount > maxHandSize)
+        {
+            Debug.Log($"[PlayerHand] 合計 {totalProjectedCount} 枚となり上限 {maxHandSize} を超えるため、破棄選択モードへ移行します。");
+            
+            // 既存の保持カードと新規カードを合体させたリストを作成
+            List<CardData> combinedList = new List<CardData>(_heldCards);
+            combinedList.AddRange(cards);
+
+            if (DiscardManager.Instance != null)
+            {
+                DiscardManager.Instance.BeginDiscardFlow(combinedList);
+            }
+            else
+            {
+                Debug.LogError("[PlayerHand] DiscardManagerが見つかりません。自動削除にフォールバックします。");
+                AutoDiscardAndAdd(cards);
+            }
+            return;
+        }
+
+        // 10枚以下の場合は追加（同じ種類のカードも複数持てるように重複チェックはしない）
         foreach (var card in cards)
         {
             if (card == null) continue;
-
-            // 上限チェック：超えた場合は先頭（最も古い）カードを捨てる
-            while (_heldCards.Count >= maxHandSize)
-            {
-                Debug.Log($"[PlayerHand] 上限({maxHandSize}枚)を超えたため {_heldCards[0].CardName} を破棄します。");
-                _heldCards.RemoveAt(0);
-            }
-
             _heldCards.Add(card);
             Debug.Log($"[PlayerHand] {card.CardName} をデッキに追加しました。現在カード数: {_heldCards.Count}");
+        }
+    }
+
+    private void AutoDiscardAndAdd(List<CardData> cards)
+    {
+        foreach (var card in cards)
+        {
+            if (card == null) continue;
+            while (_heldCards.Count >= maxHandSize)
+            {
+                _heldCards.RemoveAt(0);
+            }
+            _heldCards.Add(card);
         }
     }
 

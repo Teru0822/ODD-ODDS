@@ -48,6 +48,9 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
 
     private void Update()
     {
+        // 破棄選択中は他のインタラクトを禁止
+        if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding) return;
+
         // アニメーション中は連続クリックを受け付けないようにする
         if (_isAnimating) return;
 
@@ -120,7 +123,7 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
     {
         // カメラ移動の滑らかさを待つ（HandManagerのboardViewWaitTimeと同様の仕組み）
         yield return new WaitForSeconds(0.4f);
-        handManager.DrawCards(drawnCards);
+        handManager.DrawCards(drawnCards, true);
     }
 
     /// <summary>

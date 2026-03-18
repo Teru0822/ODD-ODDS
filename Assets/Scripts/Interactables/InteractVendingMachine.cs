@@ -23,6 +23,9 @@ public class InteractVendingMachine : MonoBehaviour, IClickInteractable
 
     private void Update()
     {
+        // 破棄選択中は他のインタラクトを禁止
+        if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding) return;
+
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (Camera.main != null)
