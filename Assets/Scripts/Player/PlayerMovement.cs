@@ -10,14 +10,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private Vector2Int _currentGridPosition = Vector2Int.zero;
 
-    [Header("Movement Settings")]
-    [Tooltip("1マスあたりのワールド移動距離")]
-    [SerializeField]
-    private float _moveStepWorldSize = 0.04f;
-
     private void Start()
     {
-        // 例えば初期位置のバリデーションなどに使用
+        // 初期グリッド座標をワールド座標に反映（GridManager の位置に同期）
+        SnapToGrid();
         Debug.Log($"[PlayerMovement] Initialized at Grid Position: {_currentGridPosition}");
     }
 
@@ -30,25 +26,24 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// DirectionType に対応するワールド空間での進行方向ベクトルを取得する
+    /// DirectionType に対応する GridManager の X/Z 方向を返す
     /// </summary>
     private Vector3 GetWorldDirection(DirectionType direction)
     {
+        // GridToWorld は X軸(gridPos.x)→ワールドX、Y軸(gridPos.y)→ワールドZ に対応している
         switch (direction)
         {
-            case DirectionType.Up:    return new Vector3(1f, 0f, 0f);   // 前進: +X
-            case DirectionType.Left:  return new Vector3(0f, 0f, 1f);   // 左: +Z
-            case DirectionType.Down:  return new Vector3(-1f, 0f, 0f);  // 後退: -X
-            case DirectionType.Right: return new Vector3(0f, 0f, -1f);  // 右: -Z
+            case DirectionType.Up:    return Vector3.right;    // +X
+            case DirectionType.Down:  return Vector3.left;     // -X
+            case DirectionType.Left:  return Vector3.forward;  // +Z
+            case DirectionType.Right: return Vector3.back;     // -Z
             default: return Vector3.zero;
         }
     }
 
     /// <summary>
-    /// 引き当てた移動カード等によって、指定方向へ一定数進む
+    /// 指定方向へ一定数進む
     /// </summary>
-    /// <param name="direction">移動方向</param>
-    /// <param name="steps">移動するマス数</param>
     public void Move(DirectionType direction, int steps)
     {
         if (steps <= 0) return;
@@ -56,16 +51,14 @@ public class PlayerMovement : MonoBehaviour
         Vector2Int moveVector = direction.ToVector2Int();
         Vector2Int targetPosition = _currentGridPosition;
 
-        // 1マスずつ進めるか判定する（壁抜け防止のため）
         int actualMovedSteps = 0;
         for (int i = 0; i < steps; i++)
         {
             Vector2Int nextPos = targetPosition + moveVector;
 
-            // TODO: 後日のIssueで壁(障害物)判定が追加されたら、ここに条件を追加
             if (GridManager.Instance != null && !GridManager.Instance.IsValidGridPosition(nextPos))
             {
-                Debug.Log($"[PlayerMovement] 盤面の端に到達したため、進行を停止します。 {targetPosition} -> {nextPos}");
+                Debug.Log($"[PlayerMovement] 盤面の端に到達したため停止: {targetPosition} -> {nextPos}");
                 break;
             }
 
@@ -76,22 +69,35 @@ public class PlayerMovement : MonoBehaviour
         if (actualMovedSteps > 0)
         {
             _currentGridPosition = targetPosition;
-            Debug.Log($"[PlayerMovement] Moved {actualMovedSteps} step(s) to {direction}. New Position: {_currentGridPosition}");
-            
-            // 指定されたワールド方向に合わせて移動させる
-            Vector3 worldDirection = GetWorldDirection(direction);
-            Vector3 moveDelta = worldDirection * (_moveStepWorldSize * actualMovedSteps);
-            transform.position += moveDelta;
 
-            // 体の向きを進行方向に向ける
-            if (worldDirection != Vector3.zero)
+            // GridManager.GridToWorld() でワールド座標を正確に取得して反映
+            if (GridManager.Instance != null)
             {
-                transform.rotation = Quaternion.LookRotation(worldDirection, Vector3.up);
+                Vector3 worldPos = GridManager.Instance.GridToWorld(_currentGridPosition);
+                // Y座標はオブジェクト自身の高さを維持する
+                transform.position = new Vector3(worldPos.x, transform.position.y, worldPos.z);
             }
+
+            // 進行方向に体を向ける
+            Vector3 dir = GetWorldDirection(direction);
+            if (dir != Vector3.zero)
+                transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
+
+            Debug.Log($"[PlayerMovement] {actualMovedSteps}マス移動完了 → Grid:{_currentGridPosition}");
         }
         else
         {
             Debug.Log("[PlayerMovement] 移動できませんでした。");
         }
+    }
+
+    /// <summary>
+    /// グリッド座標に基づいて Transform を即座にスナップする
+    /// </summary>
+    private void SnapToGrid()
+    {
+        if (GridManager.Instance == null) return;
+        Vector3 worldPos = GridManager.Instance.GridToWorld(_currentGridPosition);
+        transform.position = new Vector3(worldPos.x, transform.position.y, worldPos.z);
     }
 }
