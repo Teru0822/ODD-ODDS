@@ -1,9 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 3D空間上のCubeなどをガチャのボタンに見立て、クリックで購入とアニメーションを行うクラス
+/// 3D空間上のCubeなどをガチャのボタンに見立て、クリックで購入・パック開封・DeckView移動を行うクラス
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class InteractGachaButton : MonoBehaviour, IClickInteractable
@@ -13,6 +14,14 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
     [SerializeField] private int _packId;
     [Tooltip("パックの売価")]
     [SerializeField] private int _price;
+    [Tooltip("このボタンをクリック可能にする自販機視点のTransform（対象の視点でないとクリック不可になります）")]
+    public Transform gachaViewTarget;
+
+    [Header("Card Drawing")]
+    [Tooltip("パック開封後に移動する手元ビューのTransform")]
+    public Transform deckViewTarget;
+    [Tooltip("カードを展開するHandManagerの参照")]
+    public HandManager handManager;
 
     [Header("Animation Settings")]
     [Tooltip("クリック時に押し込まれるZ軸方向の距離")]
@@ -22,10 +31,19 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
 
     private bool _isAnimating = false;
     private Vector3 _originalLocalPosition;
+    private CameraFollow _mainCamera;
 
     private void Start()
     {
         _originalLocalPosition = transform.localPosition;
+        if (Camera.main != null)
+            _mainCamera = Camera.main.GetComponent<CameraFollow>();
+
+        // インスペクターで未設定の場合、自動的にシーンから探す
+        if (handManager == null)
+        {
+            handManager = FindObjectOfType<HandManager>();
+        }
     }
 
     private void Update()
@@ -33,7 +51,13 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
         // アニメーション中は連続クリックを受け付けないようにする
         if (_isAnimating) return;
 
-        // Mouseによる左クリックを検知
+        // 【追加修正】自販機視点の時だけクリックを許可する
+        // gachaViewTarget が未設定の場合は制限なしとする（フォールバック）
+        if (gachaViewTarget != null && CameraFollow.Instance != null)
+        {
+            if (!CameraFollow.Instance.IsAtView(gachaViewTarget)) return;
+        }
+
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             if (Camera.main != null)
@@ -41,7 +65,6 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
                 Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    // マウスポインターがこのオブジェクトに合っていれば OnInteract を呼ぶ
                     if (hit.transform == transform)
                     {
                         OnInteract();
@@ -56,21 +79,48 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
     /// </summary>
     public void OnInteract()
     {
-        // 購入処理を走らせる
-        if (PackManager.Instance != null)
+        if (PackManager.Instance == null)
         {
-            bool isSuccess = PackManager.Instance.BuyPack(_packId, _price);
-            Debug.Log(isSuccess);
-            if (isSuccess)
-            {
-                // 購入に成功した場合、Z軸方向に移動するアニメーションを再生する
-                StartCoroutine(PushAnimationCoroutine());
-            }
+            Debug.LogError("[GachaButton] PackManagerがシーンに存在しません。");
+            return;
+        }
+
+        // 購入処理
+        bool isSuccess = PackManager.Instance.BuyPack(_packId, _price);
+        if (!isSuccess) return;
+
+        // ボタンを押し込むアニメーション開始
+        StartCoroutine(PushAnimationCoroutine());
+
+        // パックを即座に開封してカードデータを取得
+        List<CardData> drawnCards = PackManager.Instance.OpenPack(_packId);
+        if (drawnCards == null || drawnCards.Count == 0)
+        {
+            Debug.LogWarning("[GachaButton] パック開封に失敗しました。");
+            return;
+        }
+
+        // カメラをDeckViewへ移動してからカードを展開
+        if (_mainCamera != null && deckViewTarget != null)
+        {
+            _mainCamera.MoveToView(deckViewTarget);
+        }
+
+        if (handManager != null)
+        {
+            StartCoroutine(DrawAfterCameraMove(drawnCards));
         }
         else
         {
-            Debug.LogError("[GachaButton] PackManagerがシーンに存在しません。");
+            Debug.LogWarning("[GachaButton] HandManagerが設定されていないためカード展開をスキップしました。");
         }
+    }
+
+    private IEnumerator DrawAfterCameraMove(List<CardData> drawnCards)
+    {
+        // カメラ移動の滑らかさを待つ（HandManagerのboardViewWaitTimeと同様の仕組み）
+        yield return new WaitForSeconds(0.4f);
+        handManager.DrawCards(drawnCards);
     }
 
     /// <summary>
@@ -83,23 +133,20 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
         Vector3 targetPosition = _originalLocalPosition + new Vector3(0, 0, _pushZOffset);
         float elapsedTime = 0f;
 
-        // Z軸方向へ押し込む
         while (elapsedTime < _animationDuration)
         {
-            transform.localPosition = Vector3.Lerp(_originalLocalPosition, targetPosition, (elapsedTime / _animationDuration));
+            transform.localPosition = Vector3.Lerp(_originalLocalPosition, targetPosition, elapsedTime / _animationDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         transform.localPosition = targetPosition;
 
-        // 少し待機
         yield return new WaitForSeconds(0.05f);
 
-        // 元の位置に戻る
         elapsedTime = 0f;
         while (elapsedTime < _animationDuration)
         {
-            transform.localPosition = Vector3.Lerp(targetPosition, _originalLocalPosition, (elapsedTime / _animationDuration));
+            transform.localPosition = Vector3.Lerp(targetPosition, _originalLocalPosition, elapsedTime / _animationDuration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }

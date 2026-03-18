@@ -16,10 +16,16 @@ public class HandManager : MonoBehaviour
     public Transform deckOrigin;
     [Tooltip("カードが並ぶ際の基準点（カメラの手元・中心座標用オブジェクト）")]
     public Transform handCenterPoint;
+    [Tooltip("移動カード使用後にカメラを向ける盤面ビュー（BoxView用の空オブジェクトをアサイン）")]
+    public Transform boardViewTarget;
+    [Tooltip("移動カード使用時、カメラが向き終わるまでの待機時間（秒）。カメラの smoothTime に合わせて調整してください")]
+    public float boardViewWaitTime = 0.8f;
 
     [Header("Layout Settings")]
     [Tooltip("展開するカード間の隙間（横幅）")]
     public float cardSpacing = 0.5f;
+    [Tooltip("2段表示の際、上下の行間の距離")]
+    public float rowSpacing = 0.8f;
     [Tooltip("手元中心（カメラ）から前方へどれくらい離すかのZ距離")]
     public float zOffset = 1.0f;
     [Tooltip("手元中心から上下へどれくらいずらすかのY距離")]
@@ -78,7 +84,7 @@ public class HandManager : MonoBehaviour
             {
                 cardObj = newCard.AddComponent<CardObject>();
             }
-            cardObj.Initialize(cardsToDraw[i], this);
+            cardObj.Initialize(cardsToDraw[i], this, boardViewTarget);
 
             // このカードの最終的な目標座標を計算
             Vector3 targetPosition = CalculateCardPosition(i, count);
@@ -105,18 +111,68 @@ public class HandManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 現在展開されている全カード（自分から自分をRemove済みの移動カード以外）を
+    /// プレイヤーの保持デッキ（PlayerHand）へ保存し、展開リストからクリアします。
+    /// </summary>
+    public void SaveRemainingCardsToPlayerHand()
+    {
+        if (PlayerHand.Instance == null) return;
+
+        List<CardData> cardsToSave = new List<CardData>();
+        foreach (var cardGO in _drawnCards)
+        {
+            if (cardGO == null) continue;
+            CardObject cardObj = cardGO.GetComponent<CardObject>();
+            if (cardObj != null && cardObj.CardData != null)
+            {
+                // 移動カードは保持しない（ユーザー要望）
+                if (cardObj.CardData.Type == CardType.Move) continue;
+
+                cardsToSave.Add(cardObj.CardData);
+            }
+        }
+
+        if (cardsToSave.Count > 0)
+        {
+            PlayerHand.Instance.AddCards(cardsToSave);
+            
+            // 保存されたカードを視覚的にもデッキへ戻す
+            // ClearHand() を呼ぶことで、リストに残っている（=保存された）カードのアニメーションが開始される
+            ClearHand();
+        }
+        else
+        {
+            _drawnCards.Clear();
+        }
+    }
+
+    /// <summary>
     /// i番目のカードが並ぶべき手元の座標を計算します
     /// </summary>
     private Vector3 CalculateCardPosition(int index, int totalCount)
     {
-        // 中心を0として、総枚数に応じた現在のカードの相対的なXオフセット幅を計算
-        float offsetIndex = index - (totalCount - 1) / 2f;
+        // 2段表示（合計6枚以上）の場合、全体の表示位置を少し下げる（上段をカメラ内に収めるため）
+        float yAdjustment = (totalCount > 5) ? -0.4f : 0f;
+
+        // 最大10枚、2段表示（1段5枚ずつ）のロジック
+        // 下段（手前）：0〜4, 上段（奥）：5〜9
+        int rowIndex = index / 5; // 0=下段, 1=上段
+        int colIndex = index % 5; // 各段の左から何枚目か
+
+        // 各段ごとの総枚数（その段に何枚あるか）を判定
+        int countInRow = (rowIndex == 0) ? Mathf.Min(totalCount, 5) : (totalCount - 5);
         
-        // 中心座標を基準として、X軸(左右), Y軸(上下), Z軸(前後) 方向へずらす
-        // ※カメラ(handCenterPoint)のローカル座標でZが前方になります
-        Vector3 localOffset = new Vector3(offsetIndex * cardSpacing, yOffset, zOffset);
+        // その段内での中心からのオフセット
+        float offsetIndex = colIndex - (countInRow - 1) / 2f;
         
-        // handCenterPointのローカル座標系に基づいてワールド座標に変換して返す
+        // Z(前後)とY(上下)の奥行き・高さ調整
+        // 上段(rowIndex=1)は少し奥(Z+)、少し上(Y+)に配置する
+        // rowSpacing を少し狭め（デフォルト 0.8f のところ、 rowIndex 適用時に詰める）
+        float currentZOffset = zOffset + rowIndex * 0.25f; 
+        float currentYOffset = yOffset + yAdjustment + (rowIndex * rowSpacing * 0.75f);
+
+        Vector3 localOffset = new Vector3(offsetIndex * cardSpacing, currentYOffset, currentZOffset);
+        
         return handCenterPoint.TransformPoint(localOffset);
     }
 

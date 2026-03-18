@@ -6,6 +6,8 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class CameraFollow : MonoBehaviour
 {
+    public static CameraFollow Instance { get; private set; }
+
     public enum CameraMode
     {
         Follow,
@@ -15,6 +17,11 @@ public class CameraFollow : MonoBehaviour
     [Header("Current Mode")]
     [Tooltip("現在のカメラ動作モード")]
     public CameraMode currentMode = CameraMode.FixedView; // 初期は固定位置
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
 
     [Header("Follow Settings")]
     [Tooltip("カメラが追いかける対象（_doll など）")]
@@ -115,6 +122,24 @@ public class CameraFollow : MonoBehaviour
     {
         currentMode = CameraMode.Follow;
         HideAllUIs();
+    }
+
+    /// <summary>
+    /// 現在のカメラが指定した視点（Transform）とほぼ一致しているかを判定します
+    /// </summary>
+    public bool IsAtView(Transform viewTransform)
+    {
+        if (viewTransform == null) return false;
+        
+        // モードがFixedViewでない場合は不一致
+        if (currentMode != CameraMode.FixedView) return false;
+
+        // 座標と回転の差異を確認
+        float posDiff = Vector3.Distance(transform.position, viewTransform.position);
+        float rotDiff = Quaternion.Angle(transform.rotation, viewTransform.rotation);
+
+        // 閾値（座標0.1以内、角度1.0度以内）で判定
+        return (posDiff < 0.1f && rotDiff < 1.0f);
     }
 
     private void HideAllUIs()

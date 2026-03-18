@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,13 +10,18 @@ using UnityEngine.InputSystem;
 public class CardObject : MonoBehaviour, IClickInteractable
 {
     private CardData _cardData;
+    public CardData CardData => _cardData; // 手札保存時にデータを取得できるように公開
     private HandManager _handManager;
+    private Transform _boardViewTarget; // HandManagerから渡される盤面ビュー参照
+    private float _cameraWaitTime = 0.8f; // カメラ移動完了を待つ御時間（秒）
 
     [Header("Visual References")]
     [Tooltip("カードの絵柄を表示するSpriteRenderer（あれば割り当て）")]
     public SpriteRenderer iconRenderer;
-    [Tooltip("カードの名前を表示する3Dテキスト等があれば（オプション）")]
+    [Tooltip("カードの名前を表示するTextMeshPro（プレハブの子オブジェクトにアタッチされている場合割り当て）")]
     public TMPro.TextMeshPro nameText;
+    [Tooltip("カードの効果説明を表示するTextMeshPro（プレハブの子オブジェクトにアタッチ）")]
+    public TMPro.TextMeshPro effectText;
 
     private void Update()
     {
@@ -39,10 +45,13 @@ public class CardObject : MonoBehaviour, IClickInteractable
     /// <summary>
     /// カードがドローされた際に HandManager から呼ばれる初期化関数
     /// </summary>
-    public void Initialize(CardData data, HandManager handManager)
+    public void Initialize(CardData data, HandManager handManager, Transform boardViewTarget)
     {
         _cardData = data;
         _handManager = handManager;
+        _boardViewTarget = boardViewTarget;
+        // HandManagerから待機時間を取得する
+        if (handManager != null) _cameraWaitTime = handManager.boardViewWaitTime;
 
         // 見た目の反映
         if (_cardData != null)
@@ -53,10 +62,78 @@ public class CardObject : MonoBehaviour, IClickInteractable
             }
             if (nameText != null)
             {
-                nameText.text = _cardData.CardName;
+                // インスペクター上の名前に日本語が含まれる可能性があるため
+                // 確実にアルファベットのみ（種類名）を表示するようにする
+                nameText.text = _cardData.Type.ToString().ToUpper();
             }
-            // TODO: SpriteRenderer等がない（Cubeそのままなど）場合、色変えなどで仮表現することも可能
+            // 効果テキストの生成
+            if (effectText != null)
+            {
+                effectText.text = BuildEffectText(_cardData);
+            }
+
+            // カードの種類によって色を変える（視覚的な区別）
+            ApplyCardColor();
         }
+    }
+
+    /// <summary>
+    /// カードデータから効果説明テキストを生成する
+    /// </summary>
+    private string BuildEffectText(CardData data)
+    {
+        if (data is MoneyCardData money)
+            return $"MONEY +{money.Amount}G";
+        if (data is MoveCardData move)
+            return $"{DirectionLabel(move.Direction)} {move.Steps} STEPS";
+        if (data is ItemCardData item)
+            return $"ITEM: {item.EffectType}";
+        return data.Description;
+    }
+
+    private string DirectionLabel(DirectionType dir)
+    {
+        switch (dir)
+        {
+            case DirectionType.Up:    return "UP";
+            case DirectionType.Down:  return "DOWN";
+            case DirectionType.Left:  return "LEFT";
+            case DirectionType.Right: return "RIGHT";
+            default: return dir.ToString().ToUpper();
+        }
+    }
+
+    /// <summary>
+    /// カードの種類に応じてMeshRendererの色を変える
+    /// </summary>
+    private void ApplyCardColor()
+    {
+        Renderer rend = GetComponentInChildren<Renderer>();
+        if (rend == null || _cardData == null) return;
+
+        Color cardColor;
+        switch (_cardData.Type)
+        {
+            case CardType.Money:
+                // お金カード：ゴールドっぽい黄色
+                cardColor = new Color(1f, 0.85f, 0.1f);
+                break;
+            case CardType.Move:
+                // 移動カード：水色
+                cardColor = new Color(0.2f, 0.7f, 1f);
+                break;
+            case CardType.Item:
+                // アイテムカード：緑
+                cardColor = new Color(0.2f, 0.9f, 0.3f);
+                break;
+            default:
+                cardColor = Color.white;
+                break;
+        }
+
+        // Materialをインスタンス化して色を適用（他のカードに影響しないように）
+        rend.material = new Material(rend.material);
+        rend.material.color = cardColor;
     }
 
     /// <summary>
@@ -66,9 +143,18 @@ public class CardObject : MonoBehaviour, IClickInteractable
     {
         if (_cardData == null) return;
 
+        // 【修正】使用時にプレイヤーの保持デッキ（PlayerHand）内からも削除する
+        // ※保持デッキから展開中の場合も、これでデータ上の重複を防げる
+        if (PlayerHand.Instance != null)
+        {
+            PlayerHand.Instance.RemoveCard(_cardData);
+        }
+
         Debug.Log($"[CardObject] {_cardData.CardName} を使用しました！");
 
         // カードのタイプによる効果の振り分け
+        bool destroyImmediately = true; // 移動カードはコルーチン内で破棄するため、フラグで制御
+
         if (_cardData is MoneyCardData moneyCard)
         {
             // 即座にお金を増やす
@@ -79,21 +165,47 @@ public class CardObject : MonoBehaviour, IClickInteractable
         }
         else if (_cardData is MoveCardData moveCard)
         {
-            // 盤面の主人公を移動させる
-            PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
-            if (playerMov != null)
+            // Coroutine終了後に破棄するため、即時破棄はしない
+            destroyImmediately = false;
+
+            // ClearHand（カメラ移動でHideAllUIsが呼ばれる）の影響を受けないよう
+            // 先に手札リストから自分を外しておく
+            if (_handManager != null)
             {
-                playerMov.Move(moveCard.Direction, moveCard.Steps);
+                _handManager.RemoveCardFromHand(gameObject);
             }
 
-            // オブジェクトの動きが見えるように盤面監視モードへ強制フォーカスを促す
-            CameraFollow cam = Camera.main.GetComponent<CameraFollow>();
+            // 保持デッキに残りの展開カードを移す（使用者が展開中に選んでいないカード）
+            if (PlayerHand.Instance != null && _handManager != null)
+            {
+                _handManager.SaveRemainingCardsToPlayerHand();
+            }
+
+            // カメラをBoxViewへ移動させ、到達後に人形を動かすCoroutineを開始
+            CameraFollow cam = Camera.main != null ? Camera.main.GetComponent<CameraFollow>() : null;
             if (cam != null)
             {
-                // 人形(PlayerMovement)の位置を見下ろす視点へ戻る、もしくは全体視点へ
-                // 現在すでにズームしている場合はそこにとどまり、手札のみクリアでヨシとするかの設計次第。
-                // とりあえず手元UIなどを片付けて盤面を見るため、視点をリセットさせる。
-                cam.ResetToFollow();
+                if (_boardViewTarget != null)
+                {
+                    cam.MoveToView(_boardViewTarget);
+                    // カメラ待機後に人形移動・カード破棄
+                    StartCoroutine(WaitCameraAndMove(cam, moveCard.Direction, moveCard.Steps));
+                }
+                else
+                {
+                    // BoardViewTargetが未設定の場合は即時移動（フォールバック）
+                    PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
+                    if (playerMov != null) playerMov.Move(moveCard.Direction, moveCard.Steps);
+                    destroyImmediately = true; // フォールバック時は即時破棄
+                    Debug.LogWarning("[CardObject] boardViewTarget が未設定のため即時移動します。HandManagerのInspectorで設定してください。");
+                }
+            }
+            else
+            {
+                // カメラが取得できない場合も即時移動
+                PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
+                if (playerMov != null) playerMov.Move(moveCard.Direction, moveCard.Steps);
+                destroyImmediately = true;
             }
         }
         else if (_cardData is ItemCardData itemCard)
@@ -102,7 +214,36 @@ public class CardObject : MonoBehaviour, IClickInteractable
             Debug.Log($"[CardObject] アイテム効果（{itemCard.EffectType}）は未実装です。");
         }
 
-        // 使用後は自分自身を手札から取り除き、破棄する
+        // 移動カード以外は使用後即座に自身を手札から取り除き、破棄する
+        if (destroyImmediately)
+        {
+            if (_handManager != null)
+            {
+                _handManager.RemoveCardFromHand(gameObject);
+            }
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// カメラがboardViewTargetへ到達するのを待ち、到達後に人形を移動させるコルーチン
+    /// </summary>
+    private IEnumerator WaitCameraAndMove(CameraFollow cam, DirectionType direction, int steps)
+    {
+        // 設定時間だけ待機してカメラが向くのを待つ
+        yield return new WaitForSeconds(_cameraWaitTime);
+
+        // カメラの待機中にオブジェクトが消えた場合のガード
+        if (this == null || gameObject == null) yield break;
+
+        // 人形を移動させる
+        PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
+        if (playerMov != null)
+        {
+            playerMov.Move(direction, steps);
+        }
+
+        // コルーチン終了後にカードを手札リストから除去・破棄する
         if (_handManager != null)
         {
             _handManager.RemoveCardFromHand(gameObject);
