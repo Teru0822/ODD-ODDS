@@ -67,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
         Vector2Int targetPosition = _currentGridPosition;
 
         int actualMovedSteps = 0;
-        for (int i = 0; i < steps; i++)
+        for (int i = 0; i < totalSteps; i++)
         {
             Vector2Int nextPos = targetPosition + moveVector;
 

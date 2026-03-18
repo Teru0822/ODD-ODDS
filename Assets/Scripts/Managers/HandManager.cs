@@ -42,6 +42,7 @@ public class HandManager : MonoBehaviour
 
     // 現在生成されているカードのリスト
     private List<GameObject> _drawnCards = new List<GameObject>();
+    private bool _isRedrawing = false; // 引き直し処理中の重複防止フラグ
 
     /// <summary>
     /// 指定されたカードデータのリストを受け取り、順番に手元へアニメーション配置します
@@ -56,9 +57,7 @@ public class HandManager : MonoBehaviour
 
         if (cardsToDraw == null || cardsToDraw.Count == 0) return;
 
-        // 前回のカードがあればクリア
-        ClearHand();
-
+        Debug.Log($"[HandManager] Drawing {cardsToDraw.Count} cards...");
         StartCoroutine(DrawCardsRoutine(cardsToDraw));
     }
 
@@ -147,14 +146,25 @@ public class HandManager : MonoBehaviour
     /// </summary>
     public void RedrawCards()
     {
+        if (_isRedrawing) return;
+        _isRedrawing = true;
+
         // 1. 現在のカードを消去
         ClearHand();
 
-        if (PackManager.Instance == null) return;
+        if (PackManager.Instance == null)
+        {
+            _isRedrawing = false;
+            return;
+        }
 
         // 2. 新しいカードを取得（アイテム効果などによる引き直しなので所持パックを消費しない GetRandomCards を使用）
         List<CardData> newList = PackManager.Instance.GetRandomCards(5);
-        if (newList == null || newList.Count == 0) return;
+        if (newList == null || newList.Count == 0)
+        {
+            _isRedrawing = false;
+            return;
+        }
 
         // 3. 少し待ってから（消去演出の後）再展開
         StartCoroutine(RedrawRoutine(newList));
@@ -162,8 +172,10 @@ public class HandManager : MonoBehaviour
 
     private IEnumerator RedrawRoutine(List<CardData> newList)
     {
-        yield return new WaitForSeconds(0.4f);
+        // 消去アニメーション(ReturnCardsRoutine)の終了を待つ
+        yield return new WaitForSeconds(0.6f);
         DrawCards(newList);
+        _isRedrawing = false;
     }
 
     /// <summary>
