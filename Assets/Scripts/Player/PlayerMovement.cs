@@ -57,6 +57,8 @@ public class PlayerMovement : MonoBehaviour
     public void Move(DirectionType direction, int steps)
     {
         int totalSteps = steps + _bonusSteps;
+        Debug.Log($"[PlayerMovement] Moving in direction {direction}: Base={steps}, Bonus={_bonusSteps}, Total={totalSteps}");
+        
         _bonusSteps = 0; // ボーナスは一度の移動で消費
 
         if (totalSteps <= 0) return;

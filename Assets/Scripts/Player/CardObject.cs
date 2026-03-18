@@ -216,6 +216,10 @@ public class CardObject : MonoBehaviour, IClickInteractable
                     var playerMov = FindObjectOfType<PlayerMovement>();
                     if (playerMov != null)
                     {
+                        if (itemCard.EffectValue == 0)
+                        {
+                            Debug.LogWarning($"[CardObject] {itemCard.CardName} の EffectValue が 0 です。効果が反映されない可能性があります。");
+                        }
                         playerMov.AddMoveBonus(itemCard.EffectValue);
                     }
                     else

@@ -152,8 +152,8 @@ public class HandManager : MonoBehaviour
 
         if (PackManager.Instance == null) return;
 
-        // 2. 新しいカードを取得（デフォルトでパック0を開封。枚数はPackManager定義に従う）
-        List<CardData> newList = PackManager.Instance.OpenPack(0);
+        // 2. 新しいカードを取得（アイテム効果などによる引き直しなので所持パックを消費しない GetRandomCards を使用）
+        List<CardData> newList = PackManager.Instance.GetRandomCards(5);
         if (newList == null || newList.Count == 0) return;
 
         // 3. 少し待ってから（消去演出の後）再展開

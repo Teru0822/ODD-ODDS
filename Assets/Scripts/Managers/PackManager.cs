@@ -83,14 +83,26 @@ public class PackManager : MonoBehaviour
             return null;
         }
 
+        // パック所持数を減らす
+        _ownedPacks[packId]--;
+
+        // カードを抽選して返す
+        List<CardData> drawnCards = GetRandomCards(5);
+        Debug.Log($"[PackManager] パック(ID: {packId}) を開封しました。残り所持数: {_ownedPacks[packId]}");
+        return drawnCards;
+    }
+
+    /// <summary>
+    /// 指定された枚数のカードをデータベースからランダムに取得します（パック消費なし、アイテム効果用）
+    /// </summary>
+    /// <param name="count">取得する枚数</param>
+    public List<CardData> GetRandomCards(int count)
+    {
         if (_allAvailableCards == null || _allAvailableCards.Count == 0)
         {
             Debug.LogError("[PackManager] データベースに CardData が1枚も登録されていません。");
             return null;
         }
-
-        // パック所持数を減らす
-        _ownedPacks[packId]--;
 
         List<CardData> drawnCards = new List<CardData>();
 
@@ -106,8 +118,9 @@ public class PackManager : MonoBehaviour
             drawnCards.Add(_allAvailableCards[Random.Range(0, _allAvailableCards.Count)]);
         }
 
-        // 残りの4枚をランダムに抽選
-        for (int i = 0; i < 4; i++)
+        // 残りの（count-1）枚をランダムに抽選
+        int remainingCount = count - 1;
+        for (int i = 0; i < remainingCount; i++)
         {
             drawnCards.Add(_allAvailableCards[Random.Range(0, _allAvailableCards.Count)]);
         }
@@ -121,7 +134,6 @@ public class PackManager : MonoBehaviour
             drawnCards[randomIndex] = temp;
         }
 
-        Debug.Log($"[PackManager] パック(ID: {packId}) を開封しました。残り所持数: {_ownedPacks[packId]}");
         return drawnCards;
     }
 
