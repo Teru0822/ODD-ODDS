@@ -1,0 +1,54 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+/// <summary>
+/// モニターをクリックした際にカメラをモニターのアップ視点へ移動させます
+/// </summary>
+[RequireComponent(typeof(Collider))]
+public class InteractMonitor : MonoBehaviour, IClickInteractable
+{
+    [Header("Camera Target")]
+    [Tooltip("モニターアップ用の視点Transform（空オブジェクト等）を指定します")]
+    public Transform monitorViewTarget;
+
+    private CameraFollow _mainCamera;
+
+    private void Start()
+    {
+        if (Camera.main != null)
+        {
+            _mainCamera = Camera.main.GetComponent<CameraFollow>();
+        }
+    }
+
+    private void Update()
+    {
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (Camera.main != null)
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+                if (Physics.Raycast(ray, out RaycastHit hit))
+                {
+                    if (hit.transform == transform)
+                    {
+                        OnInteract();
+                    }
+                }
+            }
+        }
+    }
+
+    public void OnInteract()
+    {
+        if (_mainCamera != null && monitorViewTarget != null)
+        {
+            _mainCamera.MoveToView(monitorViewTarget);
+            Debug.Log("[InteractMonitor] カメラをモニター視点へ移動します。");
+        }
+        else
+        {
+            Debug.LogWarning("[InteractMonitor] カメラまたは視点ターゲットが設定されていません。");
+        }
+    }
+}
