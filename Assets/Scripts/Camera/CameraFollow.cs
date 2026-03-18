@@ -124,5 +124,12 @@ public class CameraFollow : MonoBehaviour
         {
             interactMoney.HideUI();
         }
+
+        // 視点リセット時は展開済みの手札もクリアする
+        var handManager = FindObjectOfType<HandManager>();
+        if (handManager != null)
+        {
+            handManager.ClearHand();
+        }
     }
 }

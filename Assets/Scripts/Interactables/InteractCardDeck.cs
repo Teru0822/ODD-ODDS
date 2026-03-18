@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,12 @@ public class InteractCardDeck : MonoBehaviour, IClickInteractable
     [Header("Camera Target")]
     [Tooltip("カード展開時用の手元視点Transform（空オブジェクト等）を指定します")]
     public Transform deckViewTarget;
+
+    [Header("Card Drawing")]
+    [Tooltip("カードの生成と配置をつかさどる HandManager の参照")]
+    public HandManager handManager;
+    [Tooltip("1回のクリックで引くカードの枚数（テスト・デフォルト用）")]
+    public int cardsToDraw = 3;
 
     private CameraFollow _mainCamera;
 
@@ -46,11 +53,28 @@ public class InteractCardDeck : MonoBehaviour, IClickInteractable
             _mainCamera.MoveToView(deckViewTarget);
             Debug.Log("[InteractCardDeck] カメラをカード展開視点へ移動します。");
             
-            // TODO: ここで「目の前にカードが並ぶ」処理のトリガーを呼ぶか、追加のUI表示処理を行います。
+            if (handManager != null)
+            {
+                // カメラが移動したあとにドロー開始した方が自然なため、少し遅らせて実行
+                StartCoroutine(DrawAfterCameraMove());
+            }
+            else
+            {
+                Debug.LogWarning("[InteractCardDeck] HandManagerがアタッチされていないため、カード展開処理がスキップされました。");
+            }
         }
         else
         {
             Debug.LogWarning("[InteractCardDeck] カメラまたは視点ターゲットが設定されていません。");
         }
+    }
+
+    private IEnumerator DrawAfterCameraMove()
+    {
+        // カメラが指定視点へ向かうのとおおよそ同じ時間（smoothTime目安）待機
+        yield return new WaitForSeconds(0.4f);
+        
+        // カードのドロー指示
+        handManager.DrawCards(cardsToDraw);
     }
 }
