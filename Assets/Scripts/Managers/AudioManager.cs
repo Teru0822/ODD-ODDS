@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
         public AudioClip clip;
     }
 
-    [Header("Audio Clips (Inspector設定用)")]
+    [Header("Audio Clips")]
     [SerializeField] private SoundData[] _bgmDataList;
     [SerializeField] private SoundData[] _seDataList;
 
@@ -74,17 +74,21 @@ public class AudioManager : MonoBehaviour
                 _seDictionary.Add(data.name, data.clip);
             }
         }
+
+        PlayBgm("tmpBGM");
     }
 
     /// <summary>
     /// BGMを再生する
     /// </summary>
     /// <param name="bgmName">再生したいBGMの名前</param>
-    public void PlayBgm(string bgmName)
+    /// <param name="isLoop">ループ再生するかどうか</param>
+    public void PlayBgm(string bgmName, bool isLoop = true)
     {
         if (_bgmDictionary.TryGetValue(bgmName, out AudioClip clip))
         {
             _bgmSource.clip = clip;
+            _bgmSource.loop = isLoop;
             _bgmSource.Play();
         }
         else
