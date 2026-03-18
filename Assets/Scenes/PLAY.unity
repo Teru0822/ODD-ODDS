@@ -806,6 +806,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractGachaButton
   _packId: 0
   _price: 100
+  gachaViewTarget: {fileID: 733652603}
+  deckViewTarget: {fileID: 1286103951}
+  handManager: {fileID: 2059008183}
   _pushZOffset: 0.1
   _animationDuration: 0.1
 --- !u!65 &345523690
@@ -935,6 +938,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractGachaButton
   _packId: 3
   _price: 100
+  gachaViewTarget: {fileID: 733652603}
+  deckViewTarget: {fileID: 1286103951}
+  handManager: {fileID: 2059008183}
   _pushZOffset: 0.1
   _animationDuration: 0.1
 --- !u!65 &348346959
@@ -1101,6 +1107,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractGachaButton
   _packId: 1
   _price: 100
+  gachaViewTarget: {fileID: 733652603}
+  deckViewTarget: {fileID: 1286103951}
+  handManager: {fileID: 2059008183}
   _pushZOffset: 0.1
   _animationDuration: 0.1
 --- !u!65 &527826441
@@ -1230,6 +1239,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractGachaButton
   _packId: 4
   _price: 100
+  gachaViewTarget: {fileID: 733652603}
+  deckViewTarget: {fileID: 1286103951}
+  handManager: {fileID: 2059008183}
   _pushZOffset: 0.1
   _animationDuration: 0.1
 --- !u!65 &701777476
@@ -2562,6 +2574,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractGachaButton
   _packId: 2
   _price: 100
+  gachaViewTarget: {fileID: 733652603}
+  deckViewTarget: {fileID: 1286103951}
+  handManager: {fileID: 2059008183}
   _pushZOffset: 0.1
   _animationDuration: 0.1
 --- !u!65 &1637401351
@@ -2691,6 +2706,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractGachaButton
   _packId: 5
   _price: 100
+  gachaViewTarget: {fileID: 733652603}
+  deckViewTarget: {fileID: 1286103951}
+  handManager: {fileID: 2059008183}
   _pushZOffset: 0.1
   _animationDuration: 0.1
 --- !u!65 &1673771542
@@ -2781,12 +2799,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1719116150}
   - component: {fileID: 1719116149}
-  - component: {fileID: 1719116148}
+  - component: {fileID: 1719116155}
   - component: {fileID: 1719116154}
   - component: {fileID: 1719116147}
   - component: {fileID: 1719116153}
   - component: {fileID: 1719116152}
   - component: {fileID: 1719116151}
+  - component: {fileID: 1719116156}
   m_Layer: 0
   m_Name: _Managers
   m_TagString: Untagged
@@ -2806,7 +2825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f13647cf03c574997829b4f5e2c6ba81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
-  MapSize: {x: 10, y: 10}
+  MapSize: {x: 23, y: 10}
   CellSize: 0.04
   ExtraCells:
   - {x: 11, y: 0}
@@ -2819,22 +2838,14 @@ MonoBehaviour:
   - {x: 10, y: 1}
   - {x: 13, y: 1}
   - {x: 14, y: 1}
+  - {x: 14, y: 1}
+  - {x: 14, y: 1}
+  - {x: 14, y: 1}
+  - {x: 14, y: 1}
+  - {x: 14, y: 1}
   ShowGizmos: 1
   GizmoColor: {r: 0, g: 1, b: 0, a: 0.5}
   ExtraCellColor: {r: 1, g: 0.6, b: 0, a: 0.8}
---- !u!114 &1719116148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1719116146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e75a90c666fb489bbc9a470ba0e6552, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoneyManager
-  _initialMoney: 1000
 --- !u!114 &1719116149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3087,6 +3098,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PackManager
   _packTypeCount: 6
+  _allAvailableCards:
+  - {fileID: 11400000, guid: 4f04441682cf0414dbb27a49191fa613, type: 2}
+  - {fileID: 11400000, guid: 733372ef1f2304f109efd5a35f45ae1c, type: 2}
+  - {fileID: 11400000, guid: fb616752aed524b0caee1b5b306d1b51, type: 2}
+  - {fileID: 11400000, guid: 36cab6684ae75477e980f748f50c80a3, type: 2}
+  - {fileID: 11400000, guid: 887924bc1211f4eb4b3829efa23c856c, type: 2}
+  - {fileID: 11400000, guid: af1fd87b5b88e47aaaab2365aec8975c, type: 2}
+  - {fileID: 11400000, guid: bdb3f6b0eef17402b80ccee4c463f9ca, type: 2}
+  - {fileID: 11400000, guid: 146d22aa50cd24544a3a45bcd6c97318, type: 2}
+  - {fileID: 11400000, guid: 0355102056b1b44d28fb51b2ac2d886f, type: 2}
+  - {fileID: 11400000, guid: f42d52c91aa1045aea6ea7ad5e301134, type: 2}
+  - {fileID: 11400000, guid: b162481bc5a8945ddaff19e070137b1d, type: 2}
+--- !u!114 &1719116155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719116146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e75a90c666fb489bbc9a470ba0e6552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoneyManager
+  _initialMoney: 1000
+--- !u!114 &1719116156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719116146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f79f170c8e2a45a3890fa2cf1bf8336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHand
+  maxHandSize: 10
 --- !u!1001 &1725330730
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3623,7 +3672,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InteractCardDeck
   deckViewTarget: {fileID: 1286103951}
   handManager: {fileID: 2059008183}
-  cardsToDraw: 3
 --- !u!65 &2059008182
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3660,7 +3708,10 @@ MonoBehaviour:
   cardPrefab: {fileID: 7263897515071024567, guid: 66ac29f1c34a14b9abfc4c4830d1435f, type: 3}
   deckOrigin: {fileID: 2059008180}
   handCenterPoint: {fileID: 1286103951}
-  cardSpacing: 0.5
+  boardViewTarget: {fileID: 1726390856}
+  boardViewWaitTime: 1.3
+  cardSpacing: 0.3
+  rowSpacing: 0.8
   zOffset: 1
   yOffset: 0.1
   cardRotationOffset: {x: 90, y: 0, z: 0}
