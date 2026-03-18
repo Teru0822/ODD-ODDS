@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("現在の盤面（グリッド）上の座標")]
     [SerializeField]
     private Vector2Int _currentGridPosition = Vector2Int.zero;
+    private int _bonusSteps = 0; // アイテムカード等で付与される一時的な移動量ボーナス
 
     private void Start()
     {
@@ -42,11 +43,23 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
+    /// 次回移動時に追加されるボーナスステップを加算します
+    /// </summary>
+    public void AddMoveBonus(int amount)
+    {
+        _bonusSteps += amount;
+        Debug.Log($"[PlayerMovement] Move Bonus Added: +{amount} (Total Bonus: {_bonusSteps})");
+    }
+
+    /// <summary>
     /// 指定方向へ一定数進む
     /// </summary>
     public void Move(DirectionType direction, int steps)
     {
-        if (steps <= 0) return;
+        int totalSteps = steps + _bonusSteps;
+        _bonusSteps = 0; // ボーナスは一度の移動で消費
+
+        if (totalSteps <= 0) return;
 
         Vector2Int moveVector = direction.ToVector2Int();
         Vector2Int targetPosition = _currentGridPosition;

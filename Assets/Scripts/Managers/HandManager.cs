@@ -135,15 +135,35 @@ public class HandManager : MonoBehaviour
         if (cardsToSave.Count > 0)
         {
             PlayerHand.Instance.AddCards(cardsToSave);
-            
-            // 保存されたカードを視覚的にもデッキへ戻す
-            // ClearHand() を呼ぶことで、リストに残っている（=保存された）カードのアニメーションが開始される
-            ClearHand();
         }
-        else
-        {
-            _drawnCards.Clear();
-        }
+
+        // 保存対象が有る無しにかかわらず、現在展開中のカード（_drawnCards）を全て画面から消去し、
+        // 可視的な演出（デッキに戻る）を行う。
+        ClearHand();
+    }
+
+    /// <summary>
+    /// 現在の手札をすべて破棄し、新たにパック(ID:0)から5枚引き直します。
+    /// </summary>
+    public void RedrawCards()
+    {
+        // 1. 現在のカードを消去
+        ClearHand();
+
+        if (PackManager.Instance == null) return;
+
+        // 2. 新しいカードを取得（デフォルトでパック0を開封。枚数はPackManager定義に従う）
+        List<CardData> newList = PackManager.Instance.OpenPack(0);
+        if (newList == null || newList.Count == 0) return;
+
+        // 3. 少し待ってから（消去演出の後）再展開
+        StartCoroutine(RedrawRoutine(newList));
+    }
+
+    private IEnumerator RedrawRoutine(List<CardData> newList)
+    {
+        yield return new WaitForSeconds(0.4f);
+        DrawCards(newList);
     }
 
     /// <summary>

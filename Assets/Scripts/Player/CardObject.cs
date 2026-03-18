@@ -210,8 +210,31 @@ public class CardObject : MonoBehaviour, IClickInteractable
         }
         else if (_cardData is ItemCardData itemCard)
         {
-            // TODO: アイテム効果の実装
-            Debug.Log($"[CardObject] アイテム効果（{itemCard.EffectType}）は未実装です。");
+            switch (itemCard.EffectType)
+            {
+                case ItemEffectType.AddMoveStep:
+                    var playerMov = FindObjectOfType<PlayerMovement>();
+                    if (playerMov != null)
+                    {
+                        playerMov.AddMoveBonus(itemCard.EffectValue);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[CardObject] PlayerMovementが見つからないため、移動ボーナスを適用できませんでした。");
+                    }
+                    break;
+
+                case ItemEffectType.Redraw:
+                    if (_handManager != null)
+                    {
+                        _handManager.RedrawCards();
+                    }
+                    break;
+
+                default:
+                    Debug.Log($"[CardObject] アイテム効果（{itemCard.EffectType}）は未実装です。");
+                    break;
+            }
         }
 
         // 移動カード以外は使用後即座に自身を手札から取り除き、破棄する
