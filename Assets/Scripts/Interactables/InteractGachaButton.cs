@@ -48,8 +48,9 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
 
     private void Update()
     {
-        // 破棄選択中は他のインタラクトを禁止
+        // 破棄選択中やフロー中は他のインタラクトを禁止
         if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding) return;
+        if (CardFlowManager.Instance != null && CardFlowManager.Instance.IsInFlow) return;
 
         // アニメーション中は連続クリックを受け付けないようにする
         if (_isAnimating) return;
@@ -103,27 +104,15 @@ public class InteractGachaButton : MonoBehaviour, IClickInteractable
             return;
         }
 
-        // カメラをDeckViewへ移動してからカードを展開
-        if (_mainCamera != null && deckViewTarget != null)
+        // ここからCardFlowManagerへ処理を委譲
+        if (CardFlowManager.Instance != null)
         {
-            _mainCamera.MoveToView(deckViewTarget);
-        }
-
-        if (handManager != null)
-        {
-            StartCoroutine(DrawAfterCameraMove(drawnCards));
+            CardFlowManager.Instance.StartFlow(drawnCards);
         }
         else
         {
-            Debug.LogWarning("[GachaButton] HandManagerが設定されていないためカード展開をスキップしました。");
+            Debug.LogError("[GachaButton] CardFlowManagerがシーンに存在しません。");
         }
-    }
-
-    private IEnumerator DrawAfterCameraMove(List<CardData> drawnCards)
-    {
-        // カメラ移動の滑らかさを待つ（HandManagerのboardViewWaitTimeと同様の仕組み）
-        yield return new WaitForSeconds(0.4f);
-        handManager.DrawCards(drawnCards, true);
     }
 
     /// <summary>

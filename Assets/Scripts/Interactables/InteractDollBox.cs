@@ -23,8 +23,13 @@ public class InteractDollBox : MonoBehaviour, IClickInteractable
 
     private void Update()
     {
-        // 破棄選択中は他のインタラクトを禁止
+        // 破棄選択中やフロー中は他のインタラクトを禁止
         if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding) return;
+        if (CardFlowManager.Instance != null && CardFlowManager.Instance.IsInFlow) return;
+
+        // UI（Canvas）上のクリックだった場合は3D空間側のクリック処理を行わない
+        if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            return;
 
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {

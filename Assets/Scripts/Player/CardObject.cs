@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,9 +26,15 @@ public class CardObject : MonoBehaviour, IClickInteractable
     public TMPro.TextMeshPro nameText;
     [Tooltip("カードの効果説明を表示するTextMeshPro（プレハブの子オブジェクトにアタッチ）")]
     public TMPro.TextMeshPro effectText;
+    [Tooltip("フローでの移動順序を表示するTextMeshPro（プレハブの子オブジェクトにアタッチ）")]
+    public TMPro.TextMeshPro orderNumberText;
 
     private void Update()
     {
+        // UI（Canvas）上のクリックだった場合は3D空間側のクリック処理を行わない
+        if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            return;
+
         // 自身のクリック判定（New Input System）
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
@@ -77,6 +84,33 @@ public class CardObject : MonoBehaviour, IClickInteractable
 
             // カードの種類によって色を変える（視覚的な区別）
             ApplyCardColor();
+
+            // 初期化時は順序番号を非表示にする
+            ClearOrderNumber();
+        }
+    }
+
+    /// <summary>
+    /// フロー中の順序番号を表示します
+    /// </summary>
+    public void SetOrderNumber(int number)
+    {
+        if (orderNumberText != null)
+        {
+            orderNumberText.text = number.ToString();
+            orderNumberText.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// フロー中の順序番号を非表示にします
+    /// </summary>
+    public void ClearOrderNumber()
+    {
+        if (orderNumberText != null)
+        {
+            orderNumberText.text = "";
+            orderNumberText.gameObject.SetActive(false);
         }
     }
 
@@ -144,96 +178,51 @@ public class CardObject : MonoBehaviour, IClickInteractable
     /// </summary>
     public void OnInteract()
     {
-        // 【新機能】破棄選択モード中の場合は、使用ではなく選択の切り替えを行う
+        // 破棄選択モード中の場合は、使用ではなく選択の切り替えを行う
         if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding)
         {
             DiscardManager.Instance.ToggleSelection(this);
             return;
         }
 
+        // 新フロー（自動進行中）のクリック処理
+        if (CardFlowManager.Instance != null && CardFlowManager.Instance.IsInFlow)
+        {
+            switch (CardFlowManager.Instance.CurrentPhase)
+            {
+                case CardFlowPhase.SelectingMoveOrder:
+                    CardFlowManager.Instance.OnMoveCardClicked(this);
+                    return;
+                case CardFlowPhase.OptionalItemUse:
+                    CardFlowManager.Instance.OnItemCardClicked(this);
+                    return;
+                default:
+                    // その他のフェーズではクリックを無視
+                    return;
+            }
+        }
+
+        // --- これ以降は通常のアイテム使用（デッキから展開して使う場合） ---
+
         if (_isUsed) return;
         _isUsed = true;
 
         if (_cardData == null) return;
 
-        // 【修正】使用時にプレイヤーの保持デッキ（PlayerHand）内からも削除する
-        // ※保持デッキから展開中の場合も、これでデータ上の重複を防げる
+        // 手札デッキから削除
         if (PlayerHand.Instance != null)
         {
             PlayerHand.Instance.RemoveCard(_cardData);
         }
 
-        Debug.Log($"[CardObject] {_cardData.CardName} を使用しました！");
+        Debug.Log($"[CardObject] {_cardData.CardName} を通常使用しました！");
 
-        // カードのタイプによる効果の振り分け
-        bool destroyImmediately = true; // 移動カードはコルーチン内で破棄するため、フラグで制御
-
-        if (_cardData is MoneyCardData moneyCard)
-        {
-            // 即座にお金を増やす
-            if (MoneyManager.Instance != null)
-            {
-                MoneyManager.Instance.AddMoney(moneyCard.Amount);
-            }
-        }
-        else if (_cardData is MoveCardData moveCard)
-        {
-            // Coroutine終了後に破棄するため、即時破棄はしない
-            destroyImmediately = false;
-
-            // ClearHand（カメラ移動でHideAllUIsが呼ばれる）の影響を受けないよう
-            // 先に手札リストから自分を外しておく
-            if (_handManager != null)
-            {
-                _handManager.RemoveCardFromHand(gameObject);
-            }
-
-            // 保持デッキに残りの展開カードを移す（使用者が展開中に選んでいないカード）
-            if (PlayerHand.Instance != null && _handManager != null)
-            {
-                _handManager.SaveRemainingCardsToPlayerHand();
-            }
-
-            // 【重要】上限を超えて破棄選択モードに入った場合は、移動処理（カメラ移動・人形移動）を中断して選択を優先する
-            if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            // カメラをBoxViewへ移動させ、到達後に人形を動かすCoroutineを開始
-            CameraFollow cam = Camera.main != null ? Camera.main.GetComponent<CameraFollow>() : null;
-            if (cam != null)
-            {
-                if (_boardViewTarget != null)
-                {
-                    cam.MoveToView(_boardViewTarget);
-                    // カメラ待機後に人形移動・カード破棄
-                    StartCoroutine(WaitCameraAndMove(cam, moveCard.Direction, moveCard.Steps));
-                }
-                else
-                {
-                    // BoardViewTargetが未設定の場合は即時移動（フォールバック）
-                    PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
-                    if (playerMov != null) playerMov.Move(moveCard.Direction, moveCard.Steps);
-                    destroyImmediately = true; // フォールバック時は即時破棄
-                    Debug.LogWarning("[CardObject] boardViewTarget が未設定のため即時移動します。HandManagerのInspectorで設定してください。");
-                }
-            }
-            else
-            {
-                // カメラが取得できない場合も即時移動
-                PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
-                if (playerMov != null) playerMov.Move(moveCard.Direction, moveCard.Steps);
-                destroyImmediately = true;
-            }
-        }
-        else if (_cardData is ItemCardData itemCard)
+        if (_cardData is ItemCardData itemCard)
         {
             switch (itemCard.EffectType)
             {
                 case ItemEffectType.AddMoveStep:
-                    var playerMov = FindObjectOfType<PlayerMovement>();
+                    var playerMov = Object.FindFirstObjectByType<PlayerMovement>();
                     if (playerMov != null)
                     {
                         if (itemCard.EffectValue == 0)
@@ -249,9 +238,14 @@ public class CardObject : MonoBehaviour, IClickInteractable
                     break;
 
                 case ItemEffectType.Redraw:
-                    if (_handManager != null)
+                    if (CardFlowManager.Instance != null && PackManager.Instance != null)
                     {
-                        _handManager.RedrawCards();
+                        Debug.Log("[CardObject] 保持デッキから Redraw を使用！新規パック分を展開します。");
+                        List<CardData> newList = PackManager.Instance.GetRandomCards(5);
+                        if (newList != null && newList.Count > 0)
+                        {
+                            CardFlowManager.Instance.StartFlow(newList);
+                        }
                     }
                     break;
 
@@ -260,37 +254,12 @@ public class CardObject : MonoBehaviour, IClickInteractable
                     break;
             }
         }
-
-        // 移動カード以外は使用後即座に自身を手札から取り除き、破棄する
-        if (destroyImmediately)
+        else
         {
-            if (_handManager != null)
-            {
-                _handManager.RemoveCardFromHand(gameObject);
-            }
-            Destroy(gameObject);
-        }
-    }
-
-    /// <summary>
-    /// カメラがboardViewTargetへ到達するのを待ち、到達後に人形を移動させるコルーチン
-    /// </summary>
-    private IEnumerator WaitCameraAndMove(CameraFollow cam, DirectionType direction, int steps)
-    {
-        // 設定時間だけ待機してカメラが向くのを待つ
-        yield return new WaitForSeconds(_cameraWaitTime);
-
-        // カメラの待機中にオブジェクトが消えた場合のガード
-        if (this == null || gameObject == null) yield break;
-
-        // 人形を移動させる
-        PlayerMovement playerMov = FindObjectOfType<PlayerMovement>();
-        if (playerMov != null)
-        {
-            playerMov.Move(direction, steps);
+            Debug.LogWarning($"[CardObject] 新フローではデッキからの {_cardData.Type} カードの使用は想定されていません。");
         }
 
-        // コルーチン終了後にカードを手札リストから除去・破棄する
+        // 使用後は画面から消す
         if (_handManager != null)
         {
             _handManager.RemoveCardFromHand(gameObject);

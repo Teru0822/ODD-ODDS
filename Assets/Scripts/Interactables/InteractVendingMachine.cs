@@ -23,8 +23,12 @@ public class InteractVendingMachine : MonoBehaviour, IClickInteractable
 
     private void Update()
     {
-        // 破棄選択中は他のインタラクトを禁止
+        // 破棄選択中やフロー中は他のインタラクトを禁止
         if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding) return;
+        if (CardFlowManager.Instance != null && CardFlowManager.Instance.IsInFlow) return;
+
+        // UIへのクリック貫通防止
+        if (UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {

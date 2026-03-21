@@ -27,6 +27,9 @@ public class DiscardManager : MonoBehaviour
     // 現在のモード状態
     public bool IsDiscarding { get; private set; } = false;
 
+    // 破棄完了時に発行されるイベント
+    public event System.Action OnDiscardCompleted;
+
     // 破棄対象として選択されているカードのリスト
     private HashSet<CardObject> _selectedCards = new HashSet<CardObject>();
     
@@ -269,6 +272,9 @@ public class DiscardManager : MonoBehaviour
         }
         
         Debug.Log("[DiscardManager] Discard finalized. Remaining cards saved to PlayerHand.");
+
+        // 5. 完了イベントの発火
+        OnDiscardCompleted?.Invoke();
     }
 
     private IEnumerator ReturnToDeckFlow(HandManager hm, List<CardData> keptCards)

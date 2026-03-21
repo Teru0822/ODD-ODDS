@@ -62,6 +62,9 @@ public class CameraFollow : MonoBehaviour
     {
         // 破棄選択中は視点リセットを禁止
         if (DiscardManager.Instance != null && DiscardManager.Instance.IsDiscarding) return;
+        
+        // フロー進行中も視点リセットを禁止
+        if (CardFlowManager.Instance != null && CardFlowManager.Instance.IsInFlow) return;
 
         // ESCキーで初期状態（元の画面）へ戻る
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)

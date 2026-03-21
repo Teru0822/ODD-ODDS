@@ -42,19 +42,35 @@ public class PlayerHand : MonoBehaviour
     {
         if (cards == null || cards.Count == 0) return;
 
-        Debug.Log($"[PlayerHand] AddCards呼び出し: 現在={_heldCards.Count}枚, 追加={cards.Count}枚");
+        // 【追加】アイテムカードのみを抽出する
+        List<CardData> itemCardsOnly = new List<CardData>();
+        foreach (var c in cards)
+        {
+            if (c is ItemCardData)
+            {
+                itemCardsOnly.Add(c);
+            }
+            else
+            {
+                Debug.LogWarning($"[PlayerHand] {c.CardName} ({c.Type}) はアイテムカードではないためデッキへの追加をスキップしました。");
+            }
+        }
+
+        if (itemCardsOnly.Count == 0) return;
+
+        Debug.Log($"[PlayerHand] AddCards呼び出し: 現在={_heldCards.Count}枚, 追加={itemCardsOnly.Count}枚");
         foreach(var c in _heldCards) Debug.Log($"  - 保持中: {c?.CardName}");
-        foreach(var c in cards) Debug.Log($"  - 追加分: {c?.CardName}");
+        foreach(var c in itemCardsOnly) Debug.Log($"  - 追加分: {c?.CardName}");
 
         // 全カードを一旦追加したと仮定して上限チェック
-        int totalProjectedCount = _heldCards.Count + cards.Count;
+        int totalProjectedCount = _heldCards.Count + itemCardsOnly.Count;
         if (totalProjectedCount > maxHandSize)
         {
             Debug.Log($"[PlayerHand] 合計 {totalProjectedCount} 枚となり上限 {maxHandSize} を超えるため、破棄選択モードへ移行します。");
             
             // 既存の保持カードと新規カードを合体させたリストを作成
             List<CardData> combinedList = new List<CardData>(_heldCards);
-            combinedList.AddRange(cards);
+            combinedList.AddRange(itemCardsOnly);
 
             if (DiscardManager.Instance != null)
             {
@@ -63,13 +79,13 @@ public class PlayerHand : MonoBehaviour
             else
             {
                 Debug.LogError("[PlayerHand] DiscardManagerが見つかりません。自動削除にフォールバックします。");
-                AutoDiscardAndAdd(cards);
+                AutoDiscardAndAdd(itemCardsOnly);
             }
             return;
         }
 
         // 10枚以下の場合は追加（同じ種類のカードも複数持てるように重複チェックはしない）
-        foreach (var card in cards)
+        foreach (var card in itemCardsOnly)
         {
             if (card == null) continue;
             _heldCards.Add(card);

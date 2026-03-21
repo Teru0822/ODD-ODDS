@@ -115,4 +115,28 @@ public class PlayerMovement : MonoBehaviour
         Vector3 worldPos = GridManager.Instance.GridToWorld(_currentGridPosition);
         transform.position = new Vector3(worldPos.x, transform.position.y, worldPos.z);
     }
+
+    /// <summary>
+    /// 複数の移動コマンドを順番に実行するコルーチン
+    /// </summary>
+    /// <param name="moveOrder">移動カードのリスト</param>
+    /// <param name="delayBetweenMoves">移動ごとの待機時間</param>
+    public System.Collections.IEnumerator MoveSequence(System.Collections.Generic.List<MoveCardData> moveOrder, float delayBetweenMoves)
+    {
+        if (moveOrder == null || moveOrder.Count == 0) yield break;
+
+        Debug.Log($"[PlayerMovement] MoveSequence開始（全 {moveOrder.Count} 回）");
+
+        foreach (var moveCmd in moveOrder)
+        {
+            if (moveCmd == null) continue;
+
+            Move(moveCmd.Direction, moveCmd.Steps);
+            
+            // 各移動の後に指定時間待機する
+            yield return new WaitForSeconds(delayBetweenMoves);
+        }
+
+        Debug.Log("[PlayerMovement] MoveSequence終了");
+    }
 }
