@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 964a81393b3eb384281c11675363d83c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Demo/Materials/Wall2.mat
+  uploadId: 862670

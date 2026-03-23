@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 34e9947792d07474b860abe313673f5b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Scripts/Core/PrefabDatabase.cs
+  uploadId: 862670

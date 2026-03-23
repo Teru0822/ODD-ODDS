@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 735a0199857ec9d479797bc8fd8859ab
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Demo/01 - Basic/LightingData.asset
+  uploadId: 862670

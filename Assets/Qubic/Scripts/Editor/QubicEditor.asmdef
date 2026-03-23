@@ -1,0 +1,18 @@
+{
+    "name": "QubicEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d3ca9ba9ea5820f45afec9be4ccf0325"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

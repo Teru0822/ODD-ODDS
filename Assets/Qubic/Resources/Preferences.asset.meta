@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bd3d92b7beca2684583d7acd53751951
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Resources/Preferences.asset
+  uploadId: 862670

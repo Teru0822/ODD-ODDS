@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7508da4fed76470468ea10e8749bfb04
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Demo/Prefabs/Floor.prefab
+  uploadId: 862670

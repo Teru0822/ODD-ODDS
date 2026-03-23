@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 35e30c507a6bba0448054e05ba079ad7
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Demo/Prefabs/Column.prefab
+  uploadId: 862670

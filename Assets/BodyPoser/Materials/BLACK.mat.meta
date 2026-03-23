@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ffd710e606aee1d4baa8ce0d979cb21a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/Materials/BLACK.mat
+  uploadId: 851370

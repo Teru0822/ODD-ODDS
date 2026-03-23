@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: aa32a7761e446fd41ad84f067aecbba6
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/ExampleScene/ExampleScene.unity
+  uploadId: 851370
