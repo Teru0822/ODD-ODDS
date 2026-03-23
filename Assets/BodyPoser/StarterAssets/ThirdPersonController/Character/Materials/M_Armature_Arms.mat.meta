@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 766fd3ff04aab4745a764d33daac86fa
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/StarterAssets/ThirdPersonController/Character/Materials/M_Armature_Arms.mat
+  uploadId: 851370

@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: ff505feaadb3f9b46985f79c755886a8
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/Scripts/BodyPoser/BodyPoseBatchToolWindow.cs
+  uploadId: 851370

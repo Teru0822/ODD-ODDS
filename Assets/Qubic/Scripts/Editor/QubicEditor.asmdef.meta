@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: efebe6c48210cea448aa3b4a9486bef9
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Scripts/Editor/QubicEditor.asmdef
+  uploadId: 862670

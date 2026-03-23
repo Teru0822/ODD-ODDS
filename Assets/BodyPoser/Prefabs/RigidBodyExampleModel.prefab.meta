@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 108481a5f9ae29b4680cbfa0c7ab8529
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/Prefabs/RigidBodyExampleModel.prefab
+  uploadId: 851370

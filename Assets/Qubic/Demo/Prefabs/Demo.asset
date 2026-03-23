@@ -1,0 +1,1359 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e9947792d07474b860abe313673f5b, type: 3}
+  m_Name: Demo
+  m_EditorClassIdentifier: 
+  CellSize: 2
+  CellHeight: 3
+  Features:
+    DefaultContentPadding: 0.1
+    ColumnCoeff: 0.1
+    FullDepthCoeff: 0.25
+    FloorOffsetY: 0
+  _CollapseAllFoldouts: 0
+  Prefabs:
+  - Type: 8
+    _inspector_name: Column
+    PrefabInfo:
+      Prefab: {fileID: 9063635516650815200, guid: 35e30c507a6bba0448054e05ba079ad7, type: 3}
+      Anchor: {x: 0, y: -0, z: 0}
+      Bounds:
+        m_Center: {x: 0, y: 1.4999999, z: 0}
+        m_Extent: {x: 0.1207428, y: 1.4999999, z: 0.12075043}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: -1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Any
+      Wall: Wall, Window, Door, Arch, Partition
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 8
+    Seed: 1636305476
+  - Type: 1
+    _inspector_name: Parapet
+    PrefabInfo:
+      Prefab: {fileID: 5494204604564118301, guid: c4a6d57a591c3c540ab97f37dea80b52, type: 3}
+      Anchor: {x: -0, y: 0.111608304, z: -0}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 1, y: 0.111608304, z: 0.11837557}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Roof
+      Wall: Parapet
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 1
+    Seed: 128048637
+  - Type: 8
+    _inspector_name: Parapet Column
+    PrefabInfo:
+      Prefab: {fileID: 606079557955880730, guid: 826cde9df732e7d4993ca7de9b7cc21f, type: 3}
+      Anchor: {x: -0, y: 0.12762833, z: -0}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.1209259, y: 0.12762833, z: 0.122612}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: -1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Any
+      Wall: Parapet
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: -1
+      Chance: 5
+      PrefabType: 8
+    Seed: 2145738725
+  - Type: 1
+    _inspector_name: Win 2x3
+    PrefabInfo:
+      Prefab: {fileID: 6554949328379600172, guid: 3679062b70177bb4bb139e9f134aa3da, type: 3}
+      Anchor: {x: -0, y: 1.5, z: -0.099998474}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0.099998474}
+        m_Extent: {x: 1, y: 1.5, z: 0.099998474}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: Window
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Inside
+      Wall: Wall
+      To: Outside
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 1
+    - From: Any
+      Wall: Window
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 3
+      Chance: 5
+      PrefabType: 1
+    Seed: 521396225
+  - Type: 1
+    _inspector_name: Wall 2x3
+    PrefabInfo:
+      Prefab: {fileID: 8456710691994376640, guid: 6ed746d5ab0288a47a6bef0aad651360, type: 3}
+      Anchor: {x: -0, y: 1.5, z: -0.10000009}
+      Bounds:
+        m_Center: {x: 0, y: -0.00000011920929, z: 0.10000009}
+        m_Extent: {x: 0.9999999, y: 1.4999999, z: 0.10000008}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Any
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 1
+    - From: Closet
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 1
+      Chance: 5
+      PrefabType: 1
+    - From: Stairs,UStairs
+      Wall: Wall
+      To: Outside
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 1
+      Chance: 5
+      PrefabType: 1
+    Seed: 309894669
+  - Type: 1
+    _inspector_name: Door 2x3
+    PrefabInfo:
+      Prefab: {fileID: 2167091475557599353, guid: 99d36d7d509eee540a67bc6f21a51fc8, type: 3}
+      Anchor: {x: -0, y: 1.5, z: -0.1}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0.1}
+        m_Extent: {x: 1.0000001, y: 1.5, z: 0.1}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: Door
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Any
+      Wall: Door
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 1
+    Seed: 115875661
+  - Type: 1
+    _inspector_name: Floor
+    PrefabInfo:
+      Prefab: {fileID: 8199565050321299315, guid: 7508da4fed76470468ea10e8749bfb04, type: 3}
+      Anchor: {x: -0, y: -0.06, z: -0.00078487396}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 1, y: 0.05, z: 1}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Any
+      Wall: Floor,Ceiling
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 1
+    Seed: 1776489660
+  - Type: 1
+    _inspector_name: Railing
+    PrefabInfo:
+      Prefab: {fileID: 380768966410228445, guid: 02f6b109f139eb74ab7a402e02764e35, type: 3}
+      Anchor: {x: 0.030369759, y: 0.800735, z: -0.00000008940697}
+      Bounds:
+        m_Center: {x: -0.030369759, y: -0.2231983, z: 0.00000008940697}
+        m_Extent: {x: 1.0003698, y: 0.5775367, z: 0.088024646}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: Rails
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Inside
+      Wall: Wall
+      To: Inside
+      Steep: 1
+      BetweenSamePrefabs: 0
+      Priority: 4
+      Chance: 5
+      PrefabType: 1
+    - From: Balcony
+      Wall: Wall
+      To: Outside
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 3
+      Chance: 5
+      PrefabType: 1
+    - From: Bridge
+      Wall: Wall
+      To: Outside
+      Steep: 1
+      BetweenSamePrefabs: 0
+      Priority: 4
+      Chance: 5
+      PrefabType: 1
+    - From: Fence
+      Wall: Wall
+      To: Outside
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 3
+      Chance: 5
+      PrefabType: 1
+    - From: Inside
+      Wall: Rails
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 1
+      Chance: 5
+      PrefabType: 1
+    - From: Inside
+      Wall: Wall
+      To: Roof
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 1
+      Chance: 5
+      PrefabType: 1
+    Seed: 2143800110
+  - Type: 8
+    _inspector_name: Railing Column
+    PrefabInfo:
+      Prefab: {fileID: 7286113243426391876, guid: f9d4c5779bce78f42845ad9ca29d7df4, type: 3}
+      Anchor: {x: -0, y: 0.6307875, z: -0}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.08868408, y: 0.6307875, z: 0.08868408}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: -1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Any
+      Wall: Rails
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: -1
+      Chance: 5
+      PrefabType: 8
+    Seed: 59563508
+  - Type: 1
+    _inspector_name: Stairs
+    PrefabInfo:
+      Prefab: {fileID: 6576979424571427667, guid: 1385dc2bfca0f4844bb50f4d3e6013bd, type: 3}
+      Anchor: {x: -0.0052337646, y: 1.5215933, z: -1.9621422}
+      Bounds:
+        m_Center: {x: -0.000289917, y: -0.01970315, z: -0.0052337646}
+        m_Extent: {x: 0.8630371, y: 1.5018902, z: 2.1069946}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Stairs
+      Wall: Steps
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 4
+      Chance: 5
+      PrefabType: 1
+    Seed: 2054139772
+  - Type: 1
+    _inspector_name: UStairs
+    PrefabInfo:
+      Prefab: {fileID: 1225185363481792770, guid: 5a7223153d3586f4199e61c1ac179ac2, type: 3}
+      Anchor: {x: 0, y: 1.5054363, z: -1.5}
+      Bounds:
+        m_Center: {x: 0.011398315, y: 0.010115147, z: -0.37573242}
+        m_Extent: {x: 0.89616394, y: 1.5155514, z: 1.9227753}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: UStairs
+      Wall: Steps
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 4
+      Chance: 5
+      PrefabType: 1
+    Seed: 428170697
+  - Type: 1
+    _inspector_name: Arch
+    PrefabInfo:
+      Prefab: {fileID: 4439583717832415812, guid: 33d47380ad982564d8140fc6c866c7c7, type: 3}
+      Anchor: {x: -0, y: 2.8646855, z: 0}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 1, y: 0.12728786, z: 0.10000038}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: Arch
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Bridge
+      Wall: Wall
+      To: Outside
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 3
+      Chance: 5
+      PrefabType: 1
+    - From: Bridge
+      Wall: Wall
+      To: Inside
+      Steep: 2
+      BetweenSamePrefabs: 0
+      Priority: 2
+      Chance: 5
+      PrefabType: 1
+    - From: Any
+      Wall: Arch
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 3
+      Chance: 5
+      PrefabType: 1
+    - From: Atrium
+      Wall: Wall
+      To: Inside
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 3
+      Chance: 5
+      PrefabType: 1
+    Seed: 2087448830
+  - Type: 10
+    _inspector_name: Furniture
+    PrefabInfo:
+      Prefab: {fileID: 5902006799952147532, guid: be02589a17d62994d8ff1b1897de960d, type: 3}
+      Anchor: {x: -0.000000010001076, y: 0.7658498, z: -0.39856166}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.5, y: 0.75585, z: 0.31296018}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1957531296
+  - Type: 10
+    _inspector_name: Furniture 1
+    PrefabInfo:
+      Prefab: {fileID: 3726448647475540801, guid: 5dcfe2e42d696c643b03f5e034616cb7, type: 3}
+      Anchor: {x: 0.55428123, y: 1.1747644, z: -0.29177874}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.28407001, y: 1.1647644, z: 0.25111294}
+      RotationY: 180
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1598944817
+  - Type: 10
+    _inspector_name: Furniture 2
+    PrefabInfo:
+      Prefab: {fileID: 1129600072040426037, guid: bf320ca79e4ddbe4e9484467e0fad6b3, type: 3}
+      Anchor: {x: -0.534462, y: 1.5320499, z: -0.11139566}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.22790909, y: 0.20377731, z: 0.12603569}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 2
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1598944818
+  - Type: 10
+    _inspector_name: Furniture 3
+    PrefabInfo:
+      Prefab: {fileID: 831260739512291149, guid: d864e129932f51345b64c0ed32cde035, type: 3}
+      Anchor: {x: -0.7261269, y: 0.41755652, z: -0.14402169}
+      Bounds:
+        m_Center: {x: -0.0000009536743, y: 0, z: 0}
+        m_Extent: {x: 0.10481644, y: 0.40755653, z: 0.09370899}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 2
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall,Window,Rails
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1598944819
+  - Type: 10
+    _inspector_name: Furniture 4
+    PrefabInfo:
+      Prefab: {fileID: 5902006799952147532, guid: d3df805c8b02f2b47ab595b78d5ed4aa, type: 3}
+      Anchor: {x: -0.000000007313317, y: 0.27345824, z: -0.46293086}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0.0005950928}
+        m_Extent: {x: 0.5, y: 0.26345825, z: 0.4140172}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 2
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall,Window
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1598944820
+  - Type: 10
+    _inspector_name: Carpet
+    PrefabInfo:
+      Prefab: {fileID: 8774700955154087170, guid: 73dbb76ab2a08644d8391ba3abfce1be, type: 3}
+      Anchor: {x: 0.032373663, y: 0.0068945885, z: -0.67338926}
+      Bounds:
+        m_Center: {x: 0, y: 0.009736033, z: 0}
+        m_Extent: {x: 0.7514, y: 0.013682558, z: 0.5}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Carpet
+      AvoidNarrow: 0
+      SpawnInsideRoom: 1
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 2
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall,Window,Door,Arch
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 477897487
+  - Type: 10
+    _inspector_name: Lamp
+    PrefabInfo:
+      Prefab: {fileID: 3637568368312001148, guid: d3be033ad12e9bb4f85f2fa40719c604, type: 3}
+      Anchor: {x: 0.000000023533289, y: 2.3828022, z: -0.023155645}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.1997385, y: 0.030948639, z: 0.020567179}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 0
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: Lights
+    SetTagsRadius: 2
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall,Window,Door
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 2019043816
+  - Type: 10
+    _inspector_name: Picture
+    PrefabInfo:
+      Prefab: {fileID: 2898168804443904762, guid: 73bff8d86569cd64e9ac7126a5478d25, type: 3}
+      Anchor: {x: -0.000000014921854, y: 1.4270539, z: -0.016161874}
+      Bounds:
+        m_Center: {x: -0.000000011692585, y: 0, z: -0.196169}
+        m_Extent: {x: 0.5, y: 0.35806632, z: 0.21874306}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 272221560
+  - Type: 10
+    _inspector_name: Curtain
+    PrefabInfo:
+      Prefab: {fileID: 5598287368721066596, guid: 4cdf94571852bd148a13a4d790c142df, type: 3}
+      Anchor: {x: -0.00000006878957, y: 1.9835365, z: -0.007171338}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.022567749, y: 0.21750617, z: 0.6494999}
+      RotationY: 90
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Window
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 2501348
+  - Type: 10
+    _inspector_name: Furniture 5
+    PrefabInfo:
+      Prefab: {fileID: 1921771813381753000, guid: 6b4a0849011332447ac9d1275d247f24, type: 3}
+      Anchor: {x: 1.0051013, y: 1.2682514, z: -0.062744215}
+      Bounds:
+        m_Center: {x: 0.000000005884033, y: 0, z: -0.049358852}
+        m_Extent: {x: 0.086602926, y: 0.1048142, z: 0.09808171}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 3
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1598944821
+  - Type: 10
+    _inspector_name: Furniture 6
+    PrefabInfo:
+      Prefab: {fileID: 1934802439621367998, guid: 9a2923db98074c64f86826c871482668, type: 3}
+      Anchor: {x: -0.30745602, y: 0.3499999, z: -0.32834834}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.39499998, y: 0.3399999, z: 0.29500008}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Default
+      AvoidNarrow: 0
+      SpawnInsideRoom: 0
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 1
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1598944822
+  - Type: 10
+    _inspector_name: Carpet 2
+    PrefabInfo:
+      Prefab: {fileID: 8774700955154087170, guid: c47e7443f9c7a0940a5c9dc8d523f196, type: 3}
+      Anchor: {x: 0, y: 0.01, z: -0.7}
+      Bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0.7514, y: 0, z: 0.5}
+      RotationY: 0
+      Alternates: []
+    WallFeatures:
+      ContentPadding: 0.1
+      RequiresColumn: 0
+      Side: 0
+    ContentFeatures:
+      IsMolding: 0
+      CollisionLayer: Carpet
+      AvoidNarrow: 0
+      SpawnInsideRoom: 1
+      AvoidConvexCorners: 0
+      AvoidConcaveCorners: 0
+      NeedCeiling: 0
+      NeedFloor: 1
+      NeedColumn: 0
+      IgnoreWallPadding: 0
+      IgnoreFloorPadding: 0
+      IgnoreCollisions: 0
+      CheckWallsAround: 0
+      Decimation: 2
+      AvoidTags: 
+      AvoidCellsWithSetTags: 1
+      IsRoof: 0
+      RoofType: 0
+      RoofRoomStyle: Room
+    ColumnFeatures:
+      CornerType: 1
+    SetTags: 
+    SetTagsRadius: 1
+    Levels:
+      Min: -20
+      Max: 20
+      Type: 0
+    Rules:
+    - From: Room
+      Wall: Wall,Window,Door,Arch
+      To: Any
+      Steep: 0
+      BetweenSamePrefabs: 0
+      Priority: 0
+      Chance: 5
+      PrefabType: 10
+    Seed: 1890929429

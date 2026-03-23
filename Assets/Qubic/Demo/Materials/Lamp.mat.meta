@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e57805da284dfdf49be279e3ae0e24c0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Demo/Materials/Lamp.mat
+  uploadId: 862670

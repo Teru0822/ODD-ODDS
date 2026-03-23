@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: d44b98533c97bb140bec6f5ce9932bac
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 97dbc3e732e28ab4c8900631db34626d, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Scripts/Components/QubicBuilder.cs
+  uploadId: 862670

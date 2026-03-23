@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d3be033ad12e9bb4f85f2fa40719c604
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319424
+  packageName: QUBIC - Modular Builder
+  packageVersion: 1.3.3
+  assetPath: Assets/Qubic/Demo/Prefabs/Furniture/Lamp.prefab
+  uploadId: 862670

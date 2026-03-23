@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 527d9a432be75a445923737ec363ca57
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/Materials/Sky.mat
+  uploadId: 851370

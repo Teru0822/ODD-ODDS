@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 67b34f9889c77774280da090ba6dd42c
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 319751
+  packageName: Body Poser - It's dead simple
+  packageVersion: Body pose 1.4
+  assetPath: Assets/BodyPoser/Readme/Readme.txt
+  uploadId: 851370
