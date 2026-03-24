@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fdacb0cba2058c04e9571f7fff2a499e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251130
+  packageName: Historical Museum
+  packageVersion: 2.0
+  assetPath: Assets/LeartesStudios/HistoricalMuseum/HDRP/Scene/HDRP_Historical_Museum/LightingData.asset
+  uploadId: 663840

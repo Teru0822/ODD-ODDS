@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b469dc9d15cf9fd46b78555c36a952bf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251130
+  packageName: Historical Museum
+  packageVersion: 2.0
+  assetPath: Assets/LeartesStudios/HistoricalMuseum/HDRP/Art/Animations/Anim02.controller
+  uploadId: 663840

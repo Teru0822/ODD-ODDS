@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 355ffd1b87690b94ba89f6f7e9f1a6e9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 283316
+  packageName: Student Apartment Interior
+  packageVersion: 1.0
+  assetPath: Assets/LeartesStudios/StudentApartment/HDRP/Art/Animations/DynamicCam8.controller
+  uploadId: 674811
