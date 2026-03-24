@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 662621a2dd1627f4f9fd86f4b2c7f1b3
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 283316
+  packageName: Student Apartment Interior
+  packageVersion: 1.0
+  assetPath: Assets/LeartesStudios/StudentApartment/HDRP/Art/ShaderGraphs/S_Plaster.shadergraph
+  uploadId: 674811
