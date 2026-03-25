@@ -1052,7 +1052,7 @@ MonoBehaviour:
   LayersToIgnore: 0
   ForceLayer: 0
   LayerToSwitchTo: 0
-  UseDynamicNonConvexColliders: 1
+  UseDynamicNonConvexColliders: 0
   ColliderBakingMode: 1
   MaxMeshCollidersCreated: 6
   ColliderResolution: 300000

@@ -14,6 +14,9 @@ public class ItemCardData : CardData
     [Tooltip("効果の量（例: 移動量追加なら加算される値）")]
     public int EffectValue;
 
+    [Tooltip("このカードを使用するために必要なMP消費量（0なら消費なし）")]
+    public int MPCost = 0;
+
     private void OnEnable()
     {
         Type = CardType.Item;

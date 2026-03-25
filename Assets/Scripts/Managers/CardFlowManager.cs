@@ -241,9 +241,20 @@ public class CardFlowManager : MonoBehaviour
         if (CurrentPhase != CardFlowPhase.OptionalItemUse) return;
         if (!(card.CardData is ItemCardData itemData)) return;
 
+        // MP消費チェック（MPが足りない場合は使用不可）
+        if (itemData.MPCost > 0)
+        {
+            if (PlayerStatusManager.Instance == null ||
+                !PlayerStatusManager.Instance.TryConsumeMP(itemData.MPCost))
+            {
+                Debug.LogWarning($"[CardFlowManager] {itemData.CardName} の使用に必要なMP({itemData.MPCost})が不足しています。");
+                return;
+            }
+        }
+
         // 効果を発動
         Debug.Log($"[CardFlowManager] {itemData.CardName} を即時使用しました。");
-        
+
         switch (itemData.EffectType)
         {
             case ItemEffectType.AddMoveStep:
@@ -254,6 +265,49 @@ public class CardFlowManager : MonoBehaviour
                 Debug.Log($"[CardFlowManager] Redraw効果発動！フローをリセットして新しく引き直します。");
                 StartCoroutine(RedrawFlowRoutine());
                 return; // ここで返す（以降の処理は不要）
+
+            case ItemEffectType.HealHP_Flat:
+                if (PlayerStatusManager.Instance != null)
+                {
+                    PlayerStatusManager.Instance.Heal(itemData.EffectValue);
+                    Debug.Log($"[CardFlowManager] HP +{itemData.EffectValue} 固定回復。");
+                }
+                break;
+
+            case ItemEffectType.HealHP_Percent:
+                if (PlayerStatusManager.Instance != null)
+                {
+                    int healAmount = Mathf.RoundToInt(PlayerStatusManager.Instance.GetMaxHP() * itemData.EffectValue / 100f);
+                    PlayerStatusManager.Instance.Heal(healAmount);
+                    Debug.Log($"[CardFlowManager] HP 最大値の{itemData.EffectValue}% (+{healAmount}) 回復。");
+                }
+                break;
+
+            case ItemEffectType.RestoreMP_Flat:
+                if (PlayerStatusManager.Instance != null)
+                {
+                    PlayerStatusManager.Instance.RestoreMP(itemData.EffectValue);
+                    Debug.Log($"[CardFlowManager] MP +{itemData.EffectValue} 固定回復。");
+                }
+                break;
+
+            case ItemEffectType.RestoreMP_Percent:
+                if (PlayerStatusManager.Instance != null)
+                {
+                    int restoreAmount = Mathf.RoundToInt(PlayerStatusManager.Instance.GetMaxMP() * itemData.EffectValue / 100f);
+                    PlayerStatusManager.Instance.RestoreMP(restoreAmount);
+                    Debug.Log($"[CardFlowManager] MP 最大値の{itemData.EffectValue}% (+{restoreAmount}) 回復。");
+                }
+                break;
+
+            case ItemEffectType.InvincibleOneTurn:
+                if (PlayerStatusManager.Instance != null)
+                {
+                    PlayerStatusManager.Instance.ActivateInvincibility();
+                    Debug.Log("[CardFlowManager] 無敵状態を発動しました（1ターンダメージ無効）。");
+                }
+                break;
+
             default:
                 Debug.LogWarning($"[CardFlowManager] {itemData.EffectType} の処理はスキップされました。");
                 break;
@@ -488,8 +542,21 @@ public class CardFlowManager : MonoBehaviour
 
         Debug.Log("[CardFlowManager] フローを終了します。");
 
+        // ターン終了時：最大MPの10%を回復
+        if (PlayerStatusManager.Instance != null)
+        {
+            int mpRestore = Mathf.RoundToInt(PlayerStatusManager.Instance.GetMaxMP() * 0.1f);
+            PlayerStatusManager.Instance.RestoreMP(mpRestore);
+            Debug.Log($"[CardFlowManager] ターン終了: MP +{mpRestore} 回復（最大値の10%）");
+
+            // 無敵状態を解除（次ターンからダメージを受ける）
+            PlayerStatusManager.Instance.ClearInvincibility();
+        }
+
+        // ターン数を進める
         if (GameManager.Instance != null)
         {
+            GameManager.Instance.IncrementTurn();
             GameManager.Instance.ChangeState(GameState.Preparation);
         }
     }

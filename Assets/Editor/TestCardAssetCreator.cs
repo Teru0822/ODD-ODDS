@@ -39,8 +39,13 @@ public static class TestCardAssetCreator
         // ===========================
         // アイテムカード（ItemCard）
         // ===========================
-        CreateItemCard("ItemCard_AddMove2", "アイテムカード（移動量＋2）", ItemEffectType.AddMoveStep, 2);
-        CreateItemCard("ItemCard_Redraw",   "アイテムカード（引き直し）",   ItemEffectType.Redraw,       0);
+        CreateItemCard("ItemCard_AddMove2",       "アイテムカード（移動量＋2）",          ItemEffectType.AddMoveStep,       2,  0);
+        CreateItemCard("ItemCard_Redraw",          "アイテムカード（引き直し）",             ItemEffectType.Redraw,            0,  0);
+        CreateItemCard("ItemCard_HealHP50",        "アイテムカード（HP＋50回復）",           ItemEffectType.HealHP_Flat,      50, 20);
+        CreateItemCard("ItemCard_HealHP30pct",     "アイテムカード（HP最大値の30%回復）",     ItemEffectType.HealHP_Percent,   30, 30);
+        CreateItemCard("ItemCard_RestoreMP50",     "アイテムカード（MP＋50回復）",           ItemEffectType.RestoreMP_Flat,   50,  0);
+        CreateItemCard("ItemCard_RestoreMP30pct",  "アイテムカード（MP最大値の30%回復）",     ItemEffectType.RestoreMP_Percent, 30,  0);
+        CreateItemCard("ItemCard_InvincibleOneTurn","アイテムカード（1ターンダメージ無効）",  ItemEffectType.InvincibleOneTurn, 0, 50);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -87,7 +92,7 @@ public static class TestCardAssetCreator
         AssetDatabase.CreateAsset(asset, path);
     }
 
-    private static void CreateItemCard(string fileName, string cardName, ItemEffectType effectType, int effectValue)
+    private static void CreateItemCard(string fileName, string cardName, ItemEffectType effectType, int effectValue, int mpCost = 0)
     {
         string path = $"{OutputPath}/{fileName}.asset";
         if (File.Exists(Path.Combine(Application.dataPath.Replace("Assets", ""), path)))
@@ -100,7 +105,8 @@ public static class TestCardAssetCreator
         asset.CardName = cardName;
         asset.EffectType = effectType;
         asset.EffectValue = effectValue;
-        asset.Description = $"アイテム効果「{effectType}」を発動する。";
+        asset.MPCost = mpCost;
+        asset.Description = $"アイテム効果「{effectType}」を発動する。（MP消費: {mpCost}）";
         AssetDatabase.CreateAsset(asset, path);
     }
 }

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// ゲーム全体の進行状態（GameState）を管理するマネージャークラス
+/// ゲーム全体の進行状態（GameState）とターン数を管理するマネージャークラス
 /// </summary>
 public class GameManager : MonoBehaviour
 {
@@ -14,10 +14,21 @@ public class GameManager : MonoBehaviour
     public GameState CurrentState { get; private set; } = GameState.None;
 
     /// <summary>
+    /// 現在のターン数（1から始まる）
+    /// </summary>
+    public int CurrentTurn { get; private set; } = 0;
+
+    /// <summary>
     /// ステートが変更された際に呼ばれるイベント。
     /// 引数には 新しいGameState が渡される。
     /// </summary>
     public event Action<GameState> OnStateChanged;
+
+    /// <summary>
+    /// ターンが進んだ際に呼ばれるイベント。
+    /// 引数には 新しいターン数 が渡される。
+    /// </summary>
+    public event Action<int> OnTurnChanged;
 
     private void Awake()
     {
@@ -54,5 +65,15 @@ public class GameManager : MonoBehaviour
 
         // イベントを発行して他のシステムに通知する
         OnStateChanged?.Invoke(CurrentState);
+    }
+
+    /// <summary>
+    /// ターン数を1進める（CardFlowManager.EndFlow から呼ばれる）
+    /// </summary>
+    public void IncrementTurn()
+    {
+        CurrentTurn++;
+        Debug.Log($"[GameManager] ターン {CurrentTurn} 終了。");
+        OnTurnChanged?.Invoke(CurrentTurn);
     }
 }

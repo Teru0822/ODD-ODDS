@@ -28,6 +28,8 @@ public class CardObject : MonoBehaviour, IClickInteractable
     public TMPro.TextMeshPro effectText;
     [Tooltip("フローでの移動順序を表示するTextMeshPro（プレハブの子オブジェクトにアタッチ）")]
     public TMPro.TextMeshPro orderNumberText;
+    [Tooltip("MP消費量を表示するTextMeshPro（右上に配置するオブジェクトにアタッチ）")]
+    public TMPro.TextMeshPro mpCostText;
 
     private void Update()
     {
@@ -85,6 +87,20 @@ public class CardObject : MonoBehaviour, IClickInteractable
             // カードの種類によって色を変える（視覚的な区別）
             ApplyCardColor();
 
+            // MP消費量テキストの設定（アイテムカードのみ）
+            if (mpCostText != null)
+            {
+                if (_cardData is ItemCardData itemCard)
+                {
+                    mpCostText.text = $"MP: {itemCard.MPCost}";
+                    mpCostText.gameObject.SetActive(true);
+                }
+                else
+                {
+                    mpCostText.gameObject.SetActive(false);
+                }
+            }
+
             // 初期化時は順序番号を非表示にする
             ClearOrderNumber();
         }
@@ -120,11 +136,31 @@ public class CardObject : MonoBehaviour, IClickInteractable
     private string BuildEffectText(CardData data)
     {
         if (data is MoneyCardData money)
-            return $"MONEY +{money.Amount}G";
+            return $"+{money.Amount} G";
         if (data is MoveCardData move)
-            return $"{DirectionLabel(move.Direction)} {move.Steps} STEPS";
+            return $"{DirectionLabel(move.Direction)}  {move.Steps} STEPS";
         if (data is ItemCardData item)
-            return $"ITEM: {item.EffectType}";
+        {
+            switch (item.EffectType)
+            {
+                case ItemEffectType.AddMoveStep:
+                    return $"+{item.EffectValue} MOVE STEPS";
+                case ItemEffectType.Redraw:
+                    return "REDRAW HAND";
+                case ItemEffectType.HealHP_Flat:
+                    return $"HP +{item.EffectValue} HEAL";
+                case ItemEffectType.HealHP_Percent:
+                    return $"HP +{item.EffectValue}% MAX HEAL";
+                case ItemEffectType.RestoreMP_Flat:
+                    return $"MP +{item.EffectValue} RESTORE";
+                case ItemEffectType.RestoreMP_Percent:
+                    return $"MP +{item.EffectValue}% MAX RESTORE";
+                case ItemEffectType.InvincibleOneTurn:
+                    return "INVINCIBLE 1 TURN";
+                default:
+                    return item.EffectType.ToString().ToUpper();
+            }
+        }
         return data.Description;
     }
 
@@ -219,6 +255,21 @@ public class CardObject : MonoBehaviour, IClickInteractable
 
         if (_cardData is ItemCardData itemCard)
         {
+            // MP消費チェック（MPが足りない場合は使用をキャンセル）
+            if (itemCard.MPCost > 0)
+            {
+                if (PlayerStatusManager.Instance == null ||
+                    !PlayerStatusManager.Instance.TryConsumeMP(itemCard.MPCost))
+                {
+                    Debug.LogWarning($"[CardObject] {itemCard.CardName} の使用に必要なMP({itemCard.MPCost})が不足しています。使用をキャンセルします。");
+                    // 使用をなかったことにして手札に戻す
+                    _isUsed = false;
+                    if (PlayerHand.Instance != null) PlayerHand.Instance.AddCards(new System.Collections.Generic.List<CardData> { _cardData });
+                    return;
+                }
+            }
+
+
             switch (itemCard.EffectType)
             {
                 case ItemEffectType.AddMoveStep:
@@ -246,6 +297,48 @@ public class CardObject : MonoBehaviour, IClickInteractable
                         {
                             CardFlowManager.Instance.StartFlow(newList);
                         }
+                    }
+                    break;
+
+                case ItemEffectType.HealHP_Flat:
+                    if (PlayerStatusManager.Instance != null)
+                    {
+                        PlayerStatusManager.Instance.Heal(itemCard.EffectValue);
+                        Debug.Log($"[CardObject] HP +{itemCard.EffectValue} 固定回復。");
+                    }
+                    break;
+
+                case ItemEffectType.HealHP_Percent:
+                    if (PlayerStatusManager.Instance != null)
+                    {
+                        int healAmount = Mathf.RoundToInt(PlayerStatusManager.Instance.GetMaxHP() * itemCard.EffectValue / 100f);
+                        PlayerStatusManager.Instance.Heal(healAmount);
+                        Debug.Log($"[CardObject] HP 最大値の{itemCard.EffectValue}% (+{healAmount}) 回復。");
+                    }
+                    break;
+
+                case ItemEffectType.RestoreMP_Flat:
+                    if (PlayerStatusManager.Instance != null)
+                    {
+                        PlayerStatusManager.Instance.RestoreMP(itemCard.EffectValue);
+                        Debug.Log($"[CardObject] MP +{itemCard.EffectValue} 固定回復。");
+                    }
+                    break;
+
+                case ItemEffectType.RestoreMP_Percent:
+                    if (PlayerStatusManager.Instance != null)
+                    {
+                        int restoreAmount = Mathf.RoundToInt(PlayerStatusManager.Instance.GetMaxMP() * itemCard.EffectValue / 100f);
+                        PlayerStatusManager.Instance.RestoreMP(restoreAmount);
+                        Debug.Log($"[CardObject] MP 最大値の{itemCard.EffectValue}% (+{restoreAmount}) 回復。");
+                    }
+                    break;
+
+                case ItemEffectType.InvincibleOneTurn:
+                    if (PlayerStatusManager.Instance != null)
+                    {
+                        PlayerStatusManager.Instance.ActivateInvincibility();
+                        Debug.Log("[CardObject] 無敵状態を発動しました（1ターンダメージ無効）。");
                     }
                     break;
 

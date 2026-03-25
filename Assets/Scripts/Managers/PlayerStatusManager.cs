@@ -17,6 +17,9 @@ public class PlayerStatusManager : MonoBehaviour
     [SerializeField] private int _maxHP = 100;
     private int _currentHP;
 
+    /// <summary> 無敵状態フラグ（trueの間はダメージを受けない） </summary>
+    private bool _isInvincible = false;
+
     [Header("MP Settings")]
     [SerializeField] private int _maxMP = 100;
     private int _currentMP;
@@ -105,9 +108,35 @@ public class PlayerStatusManager : MonoBehaviour
     public int GetCurrentHP() => _currentHP;
     public int GetMaxHP() => _maxHP;
 
+    public bool IsInvincible => _isInvincible;
+
+    /// <summary>
+    /// 無敵状態を有効にする（1ターンの間ダメージを受けない）
+    /// </summary>
+    public void ActivateInvincibility()
+    {
+        _isInvincible = true;
+        Debug.Log("[PlayerStatusManager] 無敵状態 ON：このターンはダメージを受けません。");
+    }
+
+    /// <summary>
+    /// 無敵状態を解除する（ターン終了時に CardFlowManager から呼ばれる）
+    /// </summary>
+    public void ClearInvincibility()
+    {
+        if (!_isInvincible) return;
+        _isInvincible = false;
+        Debug.Log("[PlayerStatusManager] 無敵状態 OFF：ダメージを受ける状態に戻りました。");
+    }
+
     public void TakeDamage(int amount)
     {
         if (amount <= 0) return;
+        if (_isInvincible)
+        {
+            Debug.Log($"[PlayerStatusManager] 無敵状態のためダメージ {amount} を無効化しました。");
+            return;
+        }
         _currentHP = Mathf.Max(0, _currentHP - amount);
         Debug.Log($"[PlayerStatusManager] Took {amount} damage. Current HP: {_currentHP}");
         NotifyHPChanged();
