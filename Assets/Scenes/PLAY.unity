@@ -4067,6 +4067,77 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339279717}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1342360133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1342360136}
+  - component: {fileID: 1342360135}
+  - component: {fileID: 1342360134}
+  m_Layer: 0
+  m_Name: _MazeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1342360134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342360133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b973c8c5382047519e612b980aea813, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazeMarkerManager
+  mazeGizmoDisplay: {fileID: 1342360135}
+  markers: []
+  currentBrushType: 2
+  markerSize: 0.3
+  markerHeight: 1
+--- !u!114 &1342360135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342360133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c62c6f5ee0fee41d2962e97cecf894f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazeGizmoDisplay
+  mazeDataResourcePath: MazeData/maze_block_01
+  cellSize: 0.3
+  drawHeight: 0.5
+  wallColor: {r: 0.9, g: 0.2, b: 0.2, a: 0.35}
+  pathColor: {r: 0.2, g: 0.6, b: 1, a: 0.25}
+  gateColor: {r: 0.2, g: 1, b: 0.4, a: 0.5}
+  showWalls: 1
+  showPaths: 1
+  wireframeMode: 0
+--- !u!4 &1342360136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1342360133}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.55, y: 0, z: -2.4694}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1342830903
 GameObject:
   m_ObjectHideFlags: 0
@@ -5746,7 +5817,6 @@ MonoBehaviour:
   _packTypeCount: 6
   _allAvailableCards:
   - {fileID: 11400000, guid: 4f04441682cf0414dbb27a49191fa613, type: 2}
-  - {fileID: 11400000, guid: 733372ef1f2304f109efd5a35f45ae1c, type: 2}
   - {fileID: 11400000, guid: fb616752aed524b0caee1b5b306d1b51, type: 2}
   - {fileID: 11400000, guid: 36cab6684ae75477e980f748f50c80a3, type: 2}
   - {fileID: 11400000, guid: 887924bc1211f4eb4b3829efa23c856c, type: 2}
@@ -7462,3 +7532,4 @@ SceneRoots:
   - {fileID: 1286103951}
   - {fileID: 1319770439}
   - {fileID: 1994545273}
+  - {fileID: 1342360136}
