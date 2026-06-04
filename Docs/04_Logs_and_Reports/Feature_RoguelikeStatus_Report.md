@@ -14,7 +14,7 @@
 - **`Assets/Scripts/Player/_TempStatusTest.cs`**
   - 1〜4のテンキー（あるいは数字キー）でHP/MPへのダメージや回復が行えるデバッグ機能を提供します。
 - **`Assets/Editor/SetupStatusUI.cs`**
-  - エディタ上部 `ODD-ODDS > Setup > Setup Status UI` メニューから、上記の複雑なUI Hierarchy構築や文字サイズ・フォントカラーなどのパラメータを1クリックで完全生成する手順を自動化しました。
+  - エディタ上部 `Devil-Labyrinth > Setup > Setup Status UI` メニューから、上記の複雑なUI Hierarchy構築や文字サイズ・フォントカラーなどのパラメータを1クリックで完全生成する手順を自動化しました。
 
 ## 作業とコミット情報
 - 対応ブランチ: `feature/roguelike_status_and_levelup`
