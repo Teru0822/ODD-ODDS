@@ -7,7 +7,7 @@ using TMPro;
 
 public static class SetupStatusUI
 {
-    [MenuItem("ODD-ODDS/Setup/Setup Status UI")]
+    [MenuItem("Devil-Labyrinth/Setup/Setup Status UI")]
     public static void CreateStatusUI()
     {
         // ==========================================

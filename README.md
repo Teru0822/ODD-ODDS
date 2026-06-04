@@ -34,7 +34,7 @@
 > **soul’s bet**  
 > **soul’s odds**  
 > **devil’s contract**  
-> **odd odds** ←仮採用！  
+> **Devil-Labyrinth** (旧: odd odds) ←正式決定！  
 
 # コンセプト
 

@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: ODD ODDS
+  productName: Devil Labyrinth
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -848,14 +848,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: ODD ODDS
+  metroPackageName: Devil Labyrinth
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: ODD ODDS
+  metroApplicationDescription: Devil Labyrinth
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -929,7 +929,7 @@ PlayerSettings:
   cloudProjectId: eea8b943-bc71-4ae8-bf9a-fc0653132a83
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: ODD ODDS
+  projectName: Devil Labyrinth
   organizationId: terucam0822
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
